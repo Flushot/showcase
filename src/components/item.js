@@ -1,9 +1,10 @@
+import '../scss/item.scss';
 import React, { Component } from 'react';
 
 
 export default class Item extends Component {
     defaultProps: {
-        title: 'Lorem Ipsum'
+        title: 'untitled'
     }
 
     render() {
