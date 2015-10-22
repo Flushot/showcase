@@ -1,31 +1,37 @@
 import '../scss/item.scss';
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 
 export default class Item extends Component {
-    defaultProps: {
-        title: 'untitled'
-    }
-
     render() {
-        const imageUrl = 'http://lorempixel.com/' + 
-                            this.props.width + '/' + 
-                            this.props.height + 
-                            '/fashion/?_r=' + Math.random();
+        const width = this.props.width,
+              height = this.props.height;
+
+        const imageUrl = 'http://lorempixel.com/' + width + '/' + height + '/fashion/' +
+                         '?_r=' + Math.random();
 
         return (
             <div className="item" style={{display: 'inline-block'}}>
-                <div className="item-image">
-                    <img src={imageUrl}
-                         style={{
-                            width: this.props.width + 'px',
-                            height: this.props.height + 'px'
-                         }}/>
-                </div>
-                <div className="item-title">
-                    {this.props.title}
+                <img src={imageUrl}
+                     className="item-image"
+                     style={{
+                        width: width + 'px',
+                        height: height + 'px'
+                     }}/>
+                <div className="item-info">
+                    <span className="item-info-id">#{this.props.item.id}</span>
+                    <span className="item-info-title">{this.props.item.title}</span>
                 </div>
             </div>
         );
     }
 }
+
+Item.propTypes = {
+    item: PropTypes.object.isRequired
+};
+
+Item.defaultProps = {
+    width: 200,
+    height: 200
+};

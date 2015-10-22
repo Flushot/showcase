@@ -5,7 +5,7 @@ import Item from './item';
 
 export default class ItemGrid extends Component {
     defaultProps: {
-        title: 'Lorem Ipsum',
+        title: 'Lorem Ipsums',
         items: []
     }
 
@@ -18,9 +18,7 @@ export default class ItemGrid extends Component {
                 <div className="item-grid-items">
                     {this.props.items.map(function(item) {
                         return <Item key={item.id}
-                                     title={item.title}
-                                     width={200}
-                                     height={200}/>;
+                                     item={item}/>;
                     })}
                 </div>
             </div>

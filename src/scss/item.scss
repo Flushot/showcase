@@ -1,4 +1,18 @@
 .item {
 	margin: 10px;
-	border: solid black 1px;
+	border: #666 solid 1px;
+	border-radius: 6px;
+
+	.item-image {
+		border-bottom: #666 solid 1px;
+	}
+
+	.item-info {
+		margin: 0 5px 3px 5px;
+
+		.item-info-id {
+			color: green;
+			margin-right: 6px;
+		}
+	}
 }
