@@ -1,7 +1,13 @@
 .item-grid {
-	.item-grid-title {
+	width: 100%;
 
+	.item-grid-title {
+		text-align: center;
+
+		font-family: 'Segoe UI', sans-serif;
+		font-size: 1.2em;
 	}
+	
 	.item-grid-items {
 		
 	}

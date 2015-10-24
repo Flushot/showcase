@@ -13,6 +13,10 @@
     }
 
     .item-info {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 0.9em;
+        color: #666;
+
         margin: 0 5px 3px 5px;
 
         .item-info-id {
@@ -25,6 +29,10 @@
         $sel-border-style: skyblue solid 3px;
         border: $sel-border-style;
         background-color: skyblue;
+
+        .item-info {
+            color: #000;
+        }
 
         .item-image {
             opacity: 1.0;

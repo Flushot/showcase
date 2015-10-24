@@ -12,8 +12,7 @@ export default class ItemGrid extends Component {
         return (
             <div className="item-grid">
                 <div className="item-grid-title">
-                    {this.props.title}
-                    (sel: {this.props.selectedItemId})
+                    {this.props.title} ({this.props.items.length})
                 </div>
                 <div className="item-grid-items">
                     {this.props.items.map(function(item) {
