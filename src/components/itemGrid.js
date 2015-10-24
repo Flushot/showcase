@@ -33,10 +33,10 @@ ItemGrid.propTypes = {
     items: PropTypes.array,
     selectedItemId: PropTypes.number,
     onItemSelected: PropTypes.func.isRequired
-}
+};
 
 ItemGrid.defaultProps = {
     title: 'Item Grid',
     items: [],
     selectedItemId: null
-}
+};

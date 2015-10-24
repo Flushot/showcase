@@ -3,6 +3,8 @@ import '../scss/item.scss';
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
+import * as Utils from '../utils';
+
 
 export default class Item extends Component {
     render() {
@@ -10,17 +12,11 @@ export default class Item extends Component {
               height = this.props.height,
               item = this.props.item;
 
-        // Generate a random image fixed to this image.id
-        const imageCategory = 'fashion',
-              imageIds = [1,3,4,5,6,7,8,9,10],
-              imageUrl = 'http://lorempixel.com/' + width + '/' + height + '/' + imageCategory + '/' +
-                         imageIds[(item.id % imageIds.length)] + '/?_r=' + Math.random();
-
         return (
             <div className={classNames('item', {'selected': this.props.isSelected})}
                  onClick={this.props.onClick}>
 
-                <img src={imageUrl}
+                <img src={Utils.getRandomImage(width, height, item.id)}
                      className="item-image"
                      style={{
                         width: width + 'px',
