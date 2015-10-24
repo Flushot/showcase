@@ -1,18 +1,35 @@
 .item {
-	margin: 10px;
-	border: #666 solid 1px;
-	border-radius: 6px;
+    $border-style: #eee solid 3px;
 
-	.item-image {
-		border-bottom: #666 solid 1px;
-	}
+    display: inline-block;
+    margin: 10px;
+    border: $border-style;
+    // border-radius: 6px;
+    cursor: pointer;
 
-	.item-info {
-		margin: 0 5px 3px 5px;
+    .item-image {
+        opacity: 0.5;
+        border-bottom: $border-style;
+    }
 
-		.item-info-id {
-			color: green;
-			margin-right: 6px;
-		}
-	}
+    .item-info {
+        margin: 0 5px 3px 5px;
+
+        .item-info-id {
+            color: green;
+            margin-right: 6px;
+        }
+    }
+
+    &.selected {
+        $sel-border-style: skyblue solid 3px;
+        border: $sel-border-style;
+        background-color: skyblue;
+
+        .item-image {
+            opacity: 1.0;
+            transition: opacity 0.5s ease-in-out;
+            border-bottom: $sel-border-style;
+        }
+    }
 }

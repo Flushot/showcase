@@ -37,6 +37,7 @@
     "redux": "^3.0.2",
     "redux-devtools": "^2.1.5",
     "redux-logger": "^2.0.3",
+    "redux-slider-monitor": "^0.6.2",
     "sass-loader": "^3.0.0",
     "source-map-support": "^0.3.2",
     "style-loader": "^0.12.4",
@@ -44,6 +45,7 @@
     "webpack-dev-server": "^1.12.0"
   },
   "dependencies": {
+    "classnames": "^2.2.0",
     "deprecated": "0.0.1",
     "invariant": "^2.1.1",
     "lodash": "^3.10.1",

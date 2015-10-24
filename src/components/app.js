@@ -1,28 +1,39 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 
+import * as Actions from '../actions';
+import * as Utils from '../utils';
 import ItemGrid from './itemGrid';
-import * as utils from '../utils';
 
 
-export default class App extends Component {
+class App extends Component {
     // constructor(props) {
     //  super(props)
     // }
 
     render() {
-        const titles = _.words('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer varius posuere enim ac dignissim. Praesent at massa eros. Fusce mauris ex, laoreet at lectus nec, bibendum hendrerit lacus. Mauris elementum lobortis nibh at pellentesque. Maecenas a justo turpis. Morbi mauris metus, sodales in erat eget, sodales tincidunt massa.');
-
-        var itemId = 1;
-        const items = titles.map(function(word) {
-            return {
-                id: itemId++,
-                title: word
-            };
-        });
+        const { dispatch } = this.props;
+        const actions = bindActionCreators(Actions, dispatch);
 
         return (
-            <ItemGrid items={items}/>
+            <ItemGrid items={this.props.items}
+                      selectedItemId={this.props.selectedItemId}
+                      onItemSelected={itemId => actions.selectItem(itemId)}/>
         );
     }
 }
+
+
+function mapStateToProps(state) {
+    const reducer = state.reducer;
+
+    return {
+        items: reducer.items,
+        selectedItemId: reducer.selectedItemId
+    };
+}
+
+
+export default connect(mapStateToProps)(App);
