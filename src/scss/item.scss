@@ -1,21 +1,24 @@
 .item {
-    $border-style: #eee solid 3px;
+    $back-color: #DADADA;
+    $fore-color: #666;
+    $border-style: $back-color solid 4px;
 
     display: inline-block;
-    margin: 10px;
+    margin: 4px;
     border: $border-style;
+    background-color: $back-color;
     // border-radius: 6px;
     cursor: pointer;
 
     .item-image {
-        opacity: 0.5;
+        opacity: 0.65;
         border-bottom: $border-style;
     }
 
     .item-info {
         font-family: 'Segoe UI', sans-serif;
         font-size: 0.9em;
-        color: #666;
+        color: $fore-color;
 
         margin: 0 5px 3px 5px;
 
@@ -26,18 +29,20 @@
     }
 
     &.selected {
-        $sel-border-style: skyblue solid 3px;
-        border: $sel-border-style;
-        background-color: skyblue;
+        $sel-back-color: #808080;
+        $sel-fore-color: #eee;
+
+        border-color: $sel-back-color;
+        background-color: $sel-back-color;
 
         .item-info {
-            color: #000;
+            color: $sel-fore-color;
         }
 
         .item-image {
             opacity: 1.0;
-            transition: opacity 0.5s ease-in-out;
-            border-bottom: $sel-border-style;
+            transition: opacity 0.3s ease-in-out;
+            border-bottom-color: $sel-back-color;
         }
     }
 }

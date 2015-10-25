@@ -7,7 +7,6 @@ import Item from './item';
 
 export default class ItemGrid extends Component {
     render() {
-        console.log(this.props);
         const itemGrid = this;
         return (
             <div className="item-grid">

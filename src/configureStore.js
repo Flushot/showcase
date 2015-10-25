@@ -1,13 +1,16 @@
 import { compose, createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import loggerMiddleware from 'redux-logger';
-import rootReducer from './reducers';
-
+import { createFalcorMiddleware } from 'redux-falcor';
 import { devTools, persistState } from 'redux-devtools';
 
+import rootReducer from './reducers';
+import { model as remoteModel } from './reducers/remote';
 
-const createStoreWithMiddleware = compose(
+
+const storeFactory = compose(
 		applyMiddleware(
+			createFalcorMiddleware(remoteModel),
 			thunkMiddleware
 			// loggerMiddleware,
 		),
@@ -16,5 +19,5 @@ const createStoreWithMiddleware = compose(
 
 
 export default function configureStore(initialState) {
-	return createStoreWithMiddleware(rootReducer, initialState);
+	return storeFactory(rootReducer, initialState);
 }
