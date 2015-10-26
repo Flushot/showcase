@@ -21,7 +21,11 @@ class App extends Component {
     render() {
         const { dispatch } = this.props;
         const actions = bindActionCreators(Actions, dispatch);
-        const itemHandlers = {
+        const itemProps = {
+            items: _.values(this.props.remote.items),
+            likedItemIds: this.props.local.get('likedItemIds'),
+            hatedItemIds: this.props.local.get('hatedItemIds'),
+            selectedItemId: this.props.local.get('selectedItemId'),
             onItemSelected: itemId => actions.selectItem(itemId),
             onItemLiked: itemId => actions.likeItem(itemId),
             onItemHated: itemId => actions.hateItem(itemId),
@@ -56,19 +60,11 @@ class App extends Component {
                 </Navbar>
                 <div className="app-content">
                     <ItemGrid title="Popular Images"
-                              items={_.values(this.props.remote.items)}
-                              likedItemIds={this.props.local.get('likedItemIds')}
-                              hatedItemIds={this.props.local.get('hatedItemIds')}
-                              selectedItemId={this.props.local.get('selectedItemId')}
                               showControls={true}
-                              {...itemHandlers}/>
+                              {...itemProps}/>
                     <ItemGrid title="Popular Images (RO)"
-                              items={_.values(this.props.remote.items)}
-                              likedItemIds={this.props.local.get('likedItemIds')}
-                              hatedItemIds={this.props.local.get('hatedItemIds')}
-                              selectedItemId={this.props.local.get('selectedItemId')}
                               showControls={false}
-                              {...itemHandlers}/>
+                              {...itemProps}/>
                 </div>
             </div>
         );
