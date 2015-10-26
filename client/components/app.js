@@ -24,7 +24,6 @@ class App extends Component {
         const { dispatch } = this.props;
         const actions = bindActionCreators(Actions, dispatch);
         const itemProps = {
-            items: _.values(this.props.remote.items),
             likedItemIds: this.props.local.get('likedItemIds'),
             hatedItemIds: this.props.local.get('hatedItemIds'),
             selectedItemId: this.props.local.get('selectedItemId'),
@@ -79,12 +78,15 @@ class App extends Component {
                             </Panel>
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
-                            <ItemGrid title="Popular Images"
+                            <ItemGrid title="All Items"
+                                      items={_.values(this.props.remote.items)}
                                       showControls={true}
                                       {...itemProps}/>
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
-                            <ItemGrid title="Popular Images (RO)"
+                            <ItemGrid title="My Liked Items"
+                                      items={_.filter(this.props.remote.items,
+                                                      item => this.props.local.get('likedItemIds').has(item.id))}
                                       showControls={false}
                                       {...itemProps}/>
                         </Col>
