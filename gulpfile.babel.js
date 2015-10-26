@@ -12,7 +12,10 @@ gulp.task('dev', function() {
                         {
                             contentBase: path.join(__dirname, 'build', 'public'),
                             hot: true,
-                            historyApiFallback: true
+                            historyApiFallback: true,
+                            proxy: {
+                                '*': 'http://localhost:8888'
+                            }
                         }
                      );
 

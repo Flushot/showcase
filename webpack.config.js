@@ -7,6 +7,8 @@ var webpack = require('webpack'),
     assign = require('object-assign'),
     HtmlWebpackPlugin = require('html-webpack-plugin');
 
+var env = (process.env.NODE_ENV || 'dev');
+
 var config = assign({},
     {
         devtool: 'sourcemap'
@@ -16,7 +18,7 @@ var config = assign({},
             app: [
                 'webpack-dev-server/client?http://0.0.0.0:3000',  // webpack host:port
                 'webpack/hot/only-dev-server',  // prevent reload on syntax errors
-                './src/index.js'  // entry point
+                './client/index.js'  // entry point
             ],
             vendor: Object.keys(require('./package.json').dependencies)
         },
@@ -46,7 +48,7 @@ var config = assign({},
             new HtmlWebpackPlugin({
                 title: 'Assets',
                 filename: 'index.html',
-                template: 'src/index.template.html',
+                template: 'client/index.template.html',
                 inject: true
             })
         ],
@@ -55,7 +57,7 @@ var config = assign({},
             loaders: [
                 {
                     test: /\.js$/,
-                    include: path.join(__dirname, 'src'),
+                    include: path.join(__dirname, 'client'),
                     //exclude: /node_modules/,
                     loaders: [
                         'react-hot', 
@@ -64,7 +66,7 @@ var config = assign({},
                 },
                 {
                     test: /\.s[ac]ss$/,
-                    include: path.join(__dirname, 'src', 'scss'),
+                    include: path.join(__dirname, 'client', 'styles'),
                     loaders: [
                         'style', 
                         'css', 

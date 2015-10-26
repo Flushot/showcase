@@ -1,4 +1,4 @@
-import '../scss/itemGrid.scss';
+import '../styles/itemGrid.scss';
 
 import React, { Component, PropTypes } from 'react';
 

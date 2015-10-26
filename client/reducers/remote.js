@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { falcorReducer } from 'redux-falcor';
 import falcor from 'falcor';
+import HttpDataSource from 'falcor-http-datasource';
 
 import * as Actions from '../actions';
 
@@ -16,6 +17,7 @@ var titles = _.words('Lorem ipsum dolor sit amet, consectetur adipiscing elit. I
 
 
 export const model = new falcor.Model({
+    // source: new HttpDataSource('/items/')
     cache: {
         items: items
     }

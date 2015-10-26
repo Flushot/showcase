@@ -1,21 +1,31 @@
 module.exports = function (config) {
     config.set({
-        browsers: [ 'Chrome' ],
+        browsers: [
+            'Chrome',
+            'Safari'
+            // 'PhantomJS'
+        ],
+
         // karma only needs to know about the test bundle
         files: [
             'tests.bundle.js'
         ],
+
         frameworks: [
-            // 'chai', 
-            'mocha'
+            'mocha',
+            'chai'
         ],
+
         plugins: [
             'karma-chrome-launcher',
-            // 'karma-chai',
+            'karma-safari-launcher',
+            // 'karma-phantomjs-launcher',
+            'karma-chai',
             'karma-mocha',
             'karma-sourcemap-loader',
             'karma-webpack',
         ],
+
         // run the bundle through the webpack and sourcemap plugins
         preprocessors: {
             'tests.bundle.js': [ 
@@ -23,23 +33,28 @@ module.exports = function (config) {
                 'sourcemap'
             ]
         },
-        reporters: [ 'dots' ],
-        singleRun: true,
+
+        reporters: [
+            'dots'
+        ],
+
+        singleRun: false,
+
         // webpack config object
         webpack: {
             devtool: 'inline-source-map',
             module: {
                 loaders: [
                     {
+                        test: /\.js$/,
                         exclude: /node_modules/,
-                        loader: 'babel-loader',
-                        test: /\.jsx?$/
+                        loader: 'babel-loader'
                     }
                 ],
             }
         },
         webpackMiddleware: {
-            noInfo: true,
+            noInfo: true,  // Disable verbose logging of webpack compilation.
         }
     });
 };

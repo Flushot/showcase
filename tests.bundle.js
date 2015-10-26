@@ -1,3 +1,6 @@
-var context = require.context('.', true, /test\.+\.spec\.js?$/);
+import 'babel-core/polyfill';
+
+const context = require.context('./test', true, /\..+\.spec\.js?$/);
 context.keys().forEach(context);
-module.exports = context;
+
+export default context;

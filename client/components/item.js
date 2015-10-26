@@ -1,4 +1,4 @@
-import '../scss/item.scss';
+import '../styles/item.scss';
 
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
