@@ -7,14 +7,6 @@ import { Button, ButtonGroup, Glyphicon, OverlayTrigger, Label } from 'react-boo
 import * as Utils from '../utils';
 
 
-function stopPropagationThen(handler) {
-    return function(e) {
-        e.stopPropagation();
-        handler(e);
-    }
-}
-
-
 export default class Item extends Component {
     render() {
         const width = this.props.width,
@@ -53,16 +45,16 @@ export default class Item extends Component {
                             <ButtonGroup>
                                 {!(this.props.isLiked || this.props.isHated) ? [
                                     <Button key="like" bsStyle="default" bsSize="xsmall" title="Like it"
-                                            onClick={e => stopPropagationThen(this.props.onLiked)(e)}>
+                                            onClick={e => Utils.stopPropagationHandler(this.props.onLiked)(e)}>
                                         <Glyphicon glyph="thumbs-up"/>
                                     </Button>,
                                     <Button key="hate" bsStyle="default" bsSize="xsmall" title="Hate it"
-                                            onClick={e => stopPropagationThen(this.props.onHated)(e)}>
+                                            onClick={e => Utils.stopPropagationHandler(this.props.onHated)(e)}>
                                         <Glyphicon glyph="thumbs-down"/>
                                     </Button>
                                 ] : (
                                     <Button bsStyle={this.props.isLiked ? 'success' : 'danger'} bsSize="xsmall" title="Undo rating"
-                                            onClick={e => stopPropagationThen(this.props.onClearRating)(e)}>
+                                            onClick={e => Utils.stopPropagationHandler(this.props.onClearRating)(e)}>
                                         <Glyphicon glyph="remove"/>
                                         <span style={{marginLeft: '4px'}}>
                                             {this.props.isLiked ? 'Liked' : 'Hated'}

@@ -21,6 +21,12 @@ class App extends Component {
     render() {
         const { dispatch } = this.props;
         const actions = bindActionCreators(Actions, dispatch);
+        const itemHandlers = {
+            onItemSelected: itemId => actions.selectItem(itemId),
+            onItemLiked: itemId => actions.likeItem(itemId),
+            onItemHated: itemId => actions.hateItem(itemId),
+            onClearRating: itemId => actions.clearRating(itemId)
+        }
 
         return (
             <div>
@@ -29,8 +35,8 @@ class App extends Component {
                     <Nav right eventKey={0}> {/* This is the eventKey referenced */}
                         <NavItem eventKey={1} href="#">
                             <span>Liked</span>
-                            {this.props.local.likedItemIds.length > 0 ? (
-                                <Badge style={{marginLeft: '4px'}}>{this.props.local.likedItemIds.length}</Badge>
+                            {this.props.local.get('likedItemIds').count() > 0 ? (
+                                <Badge style={{marginLeft: '4px'}}>{this.props.local.get('likedItemIds').count()}</Badge>
                             ) : ''}
                         </NavItem>
                         <NavItem eventKey={2} href="#">Popular</NavItem>
@@ -51,24 +57,18 @@ class App extends Component {
                 <div className="app-content">
                     <ItemGrid title="Popular Images"
                               items={_.values(this.props.remote.items)}
-                              likedItemIds={this.props.local.likedItemIds}
-                              hatedItemIds={this.props.local.hatedItemIds}
-                              selectedItemId={this.props.local.selectedItemId}
+                              likedItemIds={this.props.local.get('likedItemIds')}
+                              hatedItemIds={this.props.local.get('hatedItemIds')}
+                              selectedItemId={this.props.local.get('selectedItemId')}
                               showControls={true}
-                              onItemSelected={itemId => actions.selectItem(itemId)}
-                              onItemLiked={itemId => actions.likeItem(itemId)}
-                              onItemHated={itemId => actions.hateItem(itemId)}
-                              onClearRating={itemId => actions.clearRating(itemId)}/>
+                              {...itemHandlers}/>
                     <ItemGrid title="Popular Images (RO)"
                               items={_.values(this.props.remote.items)}
-                              likedItemIds={this.props.local.likedItemIds}
-                              hatedItemIds={this.props.local.hatedItemIds}
-                              selectedItemId={this.props.local.selectedItemId}
+                              likedItemIds={this.props.local.get('likedItemIds')}
+                              hatedItemIds={this.props.local.get('hatedItemIds')}
+                              selectedItemId={this.props.local.get('selectedItemId')}
                               showControls={false}
-                              onItemSelected={itemId => actions.selectItem(itemId)}
-                              onItemLiked={itemId => actions.likeItem(itemId)}
-                              onItemHated={itemId => actions.hateItem(itemId)}
-                              onClearRating={itemId => actions.clearRating(itemId)}/>
+                              {...itemHandlers}/>
                 </div>
             </div>
         );

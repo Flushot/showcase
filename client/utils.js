@@ -14,3 +14,11 @@ export function getRandomImage(width, height, index=null) {
 
     return imageUrl;
 }
+
+
+export function stopPropagationHandler(handler) {
+    return function(e) {
+        e.stopPropagation();
+        handler(e);
+    }
+}

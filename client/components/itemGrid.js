@@ -3,6 +3,7 @@ import '../styles/itemGrid.scss';
 import React, { Component, PropTypes } from 'react';
 import { Panel } from 'react-bootstrap';
 import _ from 'lodash';
+import { Map, List } from 'immutable';
 
 import Item from './item';
 
@@ -17,8 +18,8 @@ export default class ItemGrid extends Component {
                     return <Item key={item.id}
                                  item={item}
                                  showControls={itemGrid.props.showControls}
-                                 isLiked={_.contains(itemGrid.props.likedItemIds, item.id)}
-                                 isHated={_.contains(itemGrid.props.hatedItemIds, item.id)}
+                                 isLiked={itemGrid.props.likedItemIds.has(item.id)}
+                                 isHated={itemGrid.props.hatedItemIds.has(item.id)}
                                  isSelected={itemGrid.props.selectedItemId == item.id}
                                  onClick={e => itemGrid.props.onItemSelected(item.id)}
                                  onLiked={e => itemGrid.props.onItemLiked(item.id)}
@@ -32,7 +33,7 @@ export default class ItemGrid extends Component {
 
     getTitle() {
         if (this.props.title)
-            return `${this.props.title} (${this.props.items.length})`;
+            return `${this.props.title}`;
     }
 }
 
@@ -41,8 +42,8 @@ ItemGrid.propTypes = {
     items: PropTypes.array,
     selectedItemId: PropTypes.number,
     showControls: PropTypes.bool,
-    likedItemIds: PropTypes.array,
-    hatedItemIds: PropTypes.array,
+    likedItemIds: PropTypes.instanceOf(List),
+    hatedItemIds: PropTypes.instanceOf(List),
     onItemSelected: PropTypes.func.isRequired,
     onItemLiked: PropTypes.func.isRequired,
     onItemHated: PropTypes.func.isRequired,
@@ -54,6 +55,6 @@ ItemGrid.defaultProps = {
     items: [],
     selectedItemId: null,
     showControls: true,
-    likedItemIds: [],
-    hatedItemIds: []
+    likedItemIds: List([]),
+    hatedItemIds: List([])
 };

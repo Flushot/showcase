@@ -1,46 +1,39 @@
 import { combineReducers } from 'redux';
 import { falcorReducer } from 'redux-falcor';
 import _ from 'lodash';
+import { Map, List, Set } from 'immutable';
 
 import * as Actions from '../actions';
 
 
-const initialState = {
+const initialState = Map({
     selectedItemId: null,
-    likedItemIds: [],
-    hatedItemIds: []
-};
+    likedItemIds: Set(),
+    hatedItemIds: Set()
+});
 
 
 export function reducer(state = initialState, action) {
     switch (action.type) {
         case Actions.SELECT_ITEM:
-            return Object.assign({}, state, {
+            return state.merge({
                 selectedItemId: action.itemId
             });
 
         case Actions.LIKE_ITEM:
-            var newLikedItemIds = state.likedItemIds;
-            if (!_.contains(newLikedItemIds, action.itemId))
-                newLikedItemIds.push(action.itemId);
-            
-            return Object.assign({}, state, {
-                likedItemIds: newLikedItemIds
+            return state.merge({
+                likedItemIds: state.get('likedItemIds').add(action.itemId)
             });
 
         case Actions.HATE_ITEM:
-            var newHatedItemIds = state.hatedItemIds;
-            if (!_.contains(newHatedItemIds, action.itemId))
-                newHatedItemIds.push(action.itemId);
-            
-            return Object.assign({}, state, {
-                hatedItemIds: newHatedItemIds
+            return state.merge({
+                hatedItemIds: state.get('hatedItemIds').add(action.itemId)
             });
 
         case Actions.CLEAR_RATING:
-            return Object.assign({}, state, {
-                likedItemIds: _.without(state.likedItemIds, action.itemId),
-                hatedItemIds: _.without(state.hatedItemIds, action.itemId)
+            return state.merge({
+                likedItemIds: state.get('likedItemIds').remove(action.itemId),
+                hatedItemIds: state.get('hatedItemIds').remove(action.itemId)
             });
 
         default:
