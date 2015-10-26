@@ -5,7 +5,8 @@
 var webpack = require('webpack'),
     path = require('path'),
     assign = require('object-assign'),
-    HtmlWebpackPlugin = require('html-webpack-plugin');
+    HtmlWebpackPlugin = require('html-webpack-plugin'),
+    _ = require('lodash');
 
 var env = (process.env.NODE_ENV || 'dev');
 
@@ -93,5 +94,34 @@ var config = assign({},
             ]
         }
     });
+
+
+// Production-specific configuration
+switch (env) {
+    case 'production':
+        config.plugins = _.union(config.plugins, [
+            // Deduplicate modules
+            new webpack.optimize.DedupePlugin(),
+
+            // Compress and obfuscate javascript
+            new webpack.optimize.UglifyJsPlugin({
+                compress: {
+                    warnings: false
+                }
+            }),
+        ]);
+        break;
+
+    case 'dev':
+        config.plugins = _.union(config.plugins, [
+            // Hot reloading of modules on code changes
+            new webpack.HotModuleReplacementPlugin(),
+        ]);
+        break;
+
+    default:
+        throw new Error('Unknown environment: ' + env);
+}
+
 
 module.exports = config;
