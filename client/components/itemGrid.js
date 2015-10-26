@@ -3,7 +3,7 @@ import '../styles/itemGrid.scss';
 import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List, Set } from 'immutable';
-import { Panel } from 'react-bootstrap';
+import { Panel, Badge } from 'react-bootstrap';
 import _ from 'lodash';
 
 import Item from './item';
@@ -33,8 +33,16 @@ export default class ItemGrid extends Component {
     }
 
     getTitle() {
-        if (this.props.title)
-            return `${this.props.title}`;
+        var title = [];
+
+        if (this.props.title) {
+            title.push(<span>{this.props.title}</span>);
+            if (this.props.items.length) {
+                title.push(<Badge style={{marginLeft: '5px'}}>{this.props.items.length}</Badge>);
+            }
+        }
+
+        return <div>{title}</div>;
     }
 }
 
