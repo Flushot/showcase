@@ -8,8 +8,12 @@ import * as Actions from '../actions';
 
 const initialState = Map({
     selectedItemId: null,
+
     likedItemIds: Set(),
-    hatedItemIds: Set()
+    hatedItemIds: Set(),
+
+    editingSettings: false,
+    settings: Map()
 });
 
 
@@ -34,6 +38,22 @@ export function reducer(state = initialState, action) {
             return state.merge({
                 likedItemIds: state.get('likedItemIds').remove(action.itemId),
                 hatedItemIds: state.get('hatedItemIds').remove(action.itemId)
+            });
+
+        case Actions.EDIT_SETTINGS:
+            return state.merge({
+                editingSettings: true
+            });
+
+        case Actions.SAVE_SETTINGS:
+            return state.merge({
+                editingSettings: false,
+                settings: Map(action.settings)
+            });
+
+        case Actions.CANCEL_SETTINGS:
+            return state.merge({
+                editingSettings: false
             });
 
         default:

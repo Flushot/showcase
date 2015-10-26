@@ -5,11 +5,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { retrievePath, retrieveValue } from 'redux-falcor';
 import _ from 'lodash';
-import { Badge, Nav, Navbar, NavBrand, NavItem, NavDropdown, MenuItem, Glyphicon } from 'react-bootstrap';
+import { Badge, Nav, Navbar, NavBrand, NavItem, NavDropdown, MenuItem, Glyphicon,
+         Grid, Row, Col, Panel, Modal, Button } from 'react-bootstrap';
 
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 import ItemGrid from './itemGrid';
+import SettingsDialog from './settingsDialog';
 
 
 class App extends Component {
@@ -48,7 +50,7 @@ class App extends Component {
                             <MenuItem eventKey="1">
                                 <Glyphicon glyph="user"/> Profile
                             </MenuItem>
-                            <MenuItem eventKey="2">
+                            <MenuItem eventKey="2" onClick={e => actions.editSettings()}>
                                 <Glyphicon glyph="cog"/> Settings
                             </MenuItem>
                             <MenuItem divider />
@@ -58,14 +60,40 @@ class App extends Component {
                         </NavDropdown>
                     </Nav>
                 </Navbar>
-                <div className="app-content">
-                    <ItemGrid title="Popular Images"
-                              showControls={true}
-                              {...itemProps}/>
-                    <ItemGrid title="Popular Images (RO)"
-                              showControls={false}
-                              {...itemProps}/>
-                </div>
+                <Grid>
+                    <Row className="show-grid">
+                        <Col md={12} lg={12} sm={12} xs={12}>
+                            <Panel header="Stats">
+                                <table className="table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Liked</th>
+                                        <td>{this.props.local.get('likedItemIds').count()}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Hated</th>
+                                        <td>{this.props.local.get('hatedItemIds').count()}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </Panel>
+                        </Col>
+                        <Col md={6} lg={6} sm={12} xs={12}>
+                            <ItemGrid title="Popular Images"
+                                      showControls={true}
+                                      {...itemProps}/>
+                        </Col>
+                        <Col md={6} lg={6} sm={12} xs={12}>
+                            <ItemGrid title="Popular Images (RO)"
+                                      showControls={false}
+                                      {...itemProps}/>
+                        </Col>
+                    </Row>
+                </Grid>
+                {this.props.local.get('editingSettings') ? (
+                    <SettingsDialog onSave={newSettings => actions.saveSettings(newSettings)}
+                                    onCancel={() => actions.cancelSettings()}/>
+                ) : ''}
             </div>
         );
     }

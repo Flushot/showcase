@@ -29,7 +29,7 @@ class DiffDebugger extends Component {
         return (
             <DevTools store={store} 
                       monitor={DiffMonitor}
-                      shortcut='ctrl+m'/>
+                      shortcut='ctrl+x'/>
         );
     }
 }
