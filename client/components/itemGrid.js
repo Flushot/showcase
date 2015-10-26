@@ -16,6 +16,7 @@ export default class ItemGrid extends Component {
                 {this.props.items.map(function(item) {
                     return <Item key={item.id}
                                  item={item}
+                                 showControls={itemGrid.props.showControls}
                                  isLiked={_.contains(itemGrid.props.likedItemIds, item.id)}
                                  isHated={_.contains(itemGrid.props.hatedItemIds, item.id)}
                                  isSelected={itemGrid.props.selectedItemId == item.id}
@@ -39,6 +40,7 @@ ItemGrid.propTypes = {
     title: PropTypes.string,
     items: PropTypes.array,
     selectedItemId: PropTypes.number,
+    showControls: PropTypes.bool,
     likedItemIds: PropTypes.array,
     hatedItemIds: PropTypes.array,
     onItemSelected: PropTypes.func.isRequired,
@@ -51,6 +53,7 @@ ItemGrid.defaultProps = {
     title: null,
     items: [],
     selectedItemId: null,
+    showControls: true,
     likedItemIds: [],
     hatedItemIds: []
 };

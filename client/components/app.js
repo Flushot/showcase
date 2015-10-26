@@ -15,7 +15,7 @@ import ItemGrid from './itemGrid';
 class App extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
-        dispatch(retrievePath('items[0..10]["title","id"]'));
+        dispatch(retrievePath('items[0..4]["title","id"]'));
     }
 
     render() {
@@ -54,6 +54,17 @@ class App extends Component {
                               likedItemIds={this.props.local.likedItemIds}
                               hatedItemIds={this.props.local.hatedItemIds}
                               selectedItemId={this.props.local.selectedItemId}
+                              showControls={true}
+                              onItemSelected={itemId => actions.selectItem(itemId)}
+                              onItemLiked={itemId => actions.likeItem(itemId)}
+                              onItemHated={itemId => actions.hateItem(itemId)}
+                              onClearRating={itemId => actions.clearRating(itemId)}/>
+                    <ItemGrid title="Popular Images (RO)"
+                              items={_.values(this.props.remote.items)}
+                              likedItemIds={this.props.local.likedItemIds}
+                              hatedItemIds={this.props.local.hatedItemIds}
+                              selectedItemId={this.props.local.selectedItemId}
+                              showControls={false}
                               onItemSelected={itemId => actions.selectItem(itemId)}
                               onItemLiked={itemId => actions.likeItem(itemId)}
                               onItemHated={itemId => actions.hateItem(itemId)}
