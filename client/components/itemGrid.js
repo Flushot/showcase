@@ -1,9 +1,10 @@
 import '../styles/itemGrid.scss';
 
 import React, { Component, PropTypes } from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Map, List, Set } from 'immutable';
 import { Panel } from 'react-bootstrap';
 import _ from 'lodash';
-import { Map, List } from 'immutable';
 
 import Item from './item';
 
@@ -42,8 +43,8 @@ ItemGrid.propTypes = {
     items: PropTypes.array,
     selectedItemId: PropTypes.number,
     showControls: PropTypes.bool,
-    likedItemIds: PropTypes.instanceOf(List),
-    hatedItemIds: PropTypes.instanceOf(List),
+    likedItemIds: ImmutablePropTypes.set,
+    hatedItemIds: ImmutablePropTypes.set,
     onItemSelected: PropTypes.func.isRequired,
     onItemLiked: PropTypes.func.isRequired,
     onItemHated: PropTypes.func.isRequired,
