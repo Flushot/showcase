@@ -6,9 +6,9 @@ import configureStore from '../configureStore';
 import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
 
 // https://github.com/calesce/redux-slider-monitor
-//import SliderMonitor from 'redux-slider-monitor';
+import SliderMonitor from 'redux-slider-monitor';
 
-import DiffMonitor from 'redux-devtools-diff-monitor';
+// import DiffMonitor from 'redux-devtools-diff-monitor';
 
 const store = configureStore();
 
@@ -20,9 +20,11 @@ export default class Root extends Component {
                 <Provider store={store}>
                     <App/>
                 </Provider>
-                <DevTools store={store} 
-                          monitor={DiffMonitor}
-                          shortcut='ctrl+m'/>
+                <DebugPanel left right bottom>
+                    <DevTools store={store} 
+                              monitor={SliderMonitor}
+                              keyboardEnabled/>
+                </DebugPanel>
             </div>
         );
     }

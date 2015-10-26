@@ -1,8 +1,11 @@
+import '../styles/app.scss';
+
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { retrievePath, retrieveValue } from 'redux-falcor';
 import _ from 'lodash';
+import { Badge, Nav, Navbar, NavBrand, NavItem, NavDropdown, MenuItem, Glyphicon } from 'react-bootstrap';
 
 import * as Actions from '../actions';
 import * as Utils from '../utils';
@@ -21,9 +24,41 @@ class App extends Component {
 
         return (
             <div>
-                <ItemGrid items={_.values(this.props.remote.items)}
-                          selectedItemId={this.props.local.selectedItemId}
-                          onItemSelected={itemId => actions.selectItem(itemId)}/>
+                <Navbar inverse toggleNavKey={0}>
+                    <NavBrand><Glyphicon glyph="camera"/> Showcase</NavBrand>
+                    <Nav right eventKey={0}> {/* This is the eventKey referenced */}
+                        <NavItem eventKey={1} href="#">
+                            <span>Liked</span>
+                            {this.props.local.likedItemIds.length > 0 ? (
+                                <Badge style={{marginLeft: '4px'}}>{this.props.local.likedItemIds.length}</Badge>
+                            ) : ''}
+                        </NavItem>
+                        <NavItem eventKey={2} href="#">Popular</NavItem>
+                        <NavDropdown eventKey={3} title="Chris Lyon" id="collapsible-navbar-dropdown">
+                            <MenuItem eventKey="1">
+                                <Glyphicon glyph="user"/> Profile
+                            </MenuItem>
+                            <MenuItem eventKey="2">
+                                <Glyphicon glyph="cog"/> Settings
+                            </MenuItem>
+                            <MenuItem divider />
+                            <MenuItem eventKey="4">
+                                <Glyphicon glyph="off"/> Logout
+                            </MenuItem>
+                        </NavDropdown>
+                    </Nav>
+                </Navbar>
+                <div className="app-content">
+                    <ItemGrid title="Popular Images"
+                              items={_.values(this.props.remote.items)}
+                              likedItemIds={this.props.local.likedItemIds}
+                              hatedItemIds={this.props.local.hatedItemIds}
+                              selectedItemId={this.props.local.selectedItemId}
+                              onItemSelected={itemId => actions.selectItem(itemId)}
+                              onItemLiked={itemId => actions.likeItem(itemId)}
+                              onItemHated={itemId => actions.hateItem(itemId)}
+                              onClearRating={itemId => actions.clearRating(itemId)}/>
+                </div>
             </div>
         );
     }

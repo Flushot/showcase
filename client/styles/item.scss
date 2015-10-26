@@ -1,6 +1,6 @@
 .item {
-    $back-color: #DADADA;
-    $fore-color: #666;
+    $back-color: #808080;
+    $fore-color: #eee;
     $border-style: $back-color solid 4px;
 
     display: inline-block;
@@ -17,20 +17,20 @@
 
     .item-info {
         font-family: 'Segoe UI', sans-serif;
-        font-size: 0.9em;
+        font-size: 1em;
         color: $fore-color;
 
-        margin: 0 5px 3px 5px;
+        margin: 0 3px 3px 5px;
 
         .item-info-id {
-            color: green;
+            color: #bbb;
             margin-right: 6px;
         }
     }
 
     &.selected {
-        $sel-back-color: #808080;
-        $sel-fore-color: #eee;
+        $sel-back-color: #DADADA;
+        $sel-fore-color: #666;
 
         border-color: $sel-back-color;
         background-color: $sel-back-color;

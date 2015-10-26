@@ -1,6 +1,8 @@
 import '../styles/itemGrid.scss';
 
 import React, { Component, PropTypes } from 'react';
+import { Panel } from 'react-bootstrap';
+import _ from 'lodash';
 
 import Item from './item';
 
@@ -9,20 +11,27 @@ export default class ItemGrid extends Component {
     render() {
         const itemGrid = this;
         return (
-            <div className="item-grid">
-                <div className="item-grid-title">
-                    {this.props.title} ({this.props.items.length})
-                </div>
-                <div className="item-grid-items">
-                    {this.props.items.map(function(item) {
-                        return <Item key={item.id}
-                                     item={item}
-                                     isSelected={itemGrid.props.selectedItemId == item.id}
-                                     onClick={e => itemGrid.props.onItemSelected(item.id)}/>;
-                    })}
-                </div>
-            </div>
+            <Panel header={this.getTitle()}>
+
+                {this.props.items.map(function(item) {
+                    return <Item key={item.id}
+                                 item={item}
+                                 isLiked={_.contains(itemGrid.props.likedItemIds, item.id)}
+                                 isHated={_.contains(itemGrid.props.hatedItemIds, item.id)}
+                                 isSelected={itemGrid.props.selectedItemId == item.id}
+                                 onClick={e => itemGrid.props.onItemSelected(item.id)}
+                                 onLiked={e => itemGrid.props.onItemLiked(item.id)}
+                                 onHated={e => itemGrid.props.onItemHated(item.id)}
+                                 onClearRating={e => itemGrid.props.onClearRating(item.id)}/>;
+                })}
+
+            </Panel>
         );
+    }
+
+    getTitle() {
+        if (this.props.title)
+            return `${this.props.title} (${this.props.items.length})`;
     }
 }
 
@@ -30,11 +39,18 @@ ItemGrid.propTypes = {
     title: PropTypes.string,
     items: PropTypes.array,
     selectedItemId: PropTypes.number,
-    onItemSelected: PropTypes.func.isRequired
+    likedItemIds: PropTypes.array,
+    hatedItemIds: PropTypes.array,
+    onItemSelected: PropTypes.func.isRequired,
+    onItemLiked: PropTypes.func.isRequired,
+    onItemHated: PropTypes.func.isRequired,
+    onClearRating: PropTypes.func.isRequired
 };
 
 ItemGrid.defaultProps = {
-    title: 'Item Grid',
+    title: null,
     items: [],
-    selectedItemId: null
+    selectedItemId: null,
+    likedItemIds: [],
+    hatedItemIds: []
 };

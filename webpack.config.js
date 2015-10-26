@@ -74,9 +74,21 @@ var config = assign({},
                     ]
                 },
                 {
+                    test: /\.css$/,
+                    include: path.join(__dirname, 'client', 'styles'),
+                    loaders: [
+                        'style', 
+                        'css'
+                    ]
+                },
+                {
                     // inline base64 URLs for <=8k images, direct URLs for the rest
                     test: /\.(svg|png)$/,
                     loader: 'url-loader?limit=8192'
+                },
+                {
+                    test: /\.(woff2?|ttf|eot|svg)$/,
+                    loader: 'file-loader'
                 }
             ]
         }

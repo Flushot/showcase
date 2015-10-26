@@ -21,6 +21,7 @@
     "css-loader": "^0.19.0",
     "date": "^1.0.2",
     "express": "^4.13.3",
+    "file-loader": "^0.8.4",
     "gulp": "^3.9.0",
     "html-webpack-plugin": "^1.6.2",
     "isomorphic-fetch": "^2.1.1",
@@ -46,6 +47,7 @@
     "sass-loader": "^3.0.0",
     "source-map-support": "^0.3.2",
     "style-loader": "^0.12.4",
+    "url-loader": "^0.5.6",
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.12.0"
   },
@@ -58,8 +60,10 @@
     "invariant": "^2.1.1",
     "lodash": "^3.10.1",
     "react": "^0.14.0",
+    "react-bootstrap": "^0.27.2",
     "react-dom": "^0.14.0",
     "react-redux": "^3.1.0",
+    "react-router": "^1.0.0-rc3",
     "redux": "^3.0.2",
     "redux-falcor": "^2.3.0",
     "redux-thunk": "^1.0.0"

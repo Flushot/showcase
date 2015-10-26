@@ -12,7 +12,7 @@ const storeFactory = compose(
 		applyMiddleware(
 			createFalcorMiddleware(remoteModel),
 			thunkMiddleware
-			// loggerMiddleware,
+			// loggerMiddleware
 		),
 		devTools()
 	)(createStore);
