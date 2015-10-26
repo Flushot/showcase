@@ -1,9 +1,9 @@
 module.exports = function (config) {
     config.set({
         browsers: [
-            'Chrome',
-            'Safari'
-            // 'PhantomJS'
+            // 'Chrome',
+            // 'Safari',
+            'PhantomJS'
         ],
 
         // karma only needs to know about the test bundle
@@ -17,13 +17,13 @@ module.exports = function (config) {
         ],
 
         plugins: [
-            'karma-chrome-launcher',
-            'karma-safari-launcher',
-            // 'karma-phantomjs-launcher',
+            // 'karma-chrome-launcher',
+            // 'karma-safari-launcher',
+            'karma-phantomjs-launcher',
             'karma-chai',
             'karma-mocha',
             'karma-sourcemap-loader',
-            'karma-webpack',
+            'karma-webpack'
         ],
 
         // run the bundle through the webpack and sourcemap plugins
