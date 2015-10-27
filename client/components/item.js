@@ -38,9 +38,8 @@ export default class Item extends Component {
                 </div>
 
                 <div className="item-info">
-                    <span className="item-info-id">#{item.id}</span>
-                    <span className="item-info-title">{item.title}</span>
-                    <div style={{'float': 'right'}}>
+                    <div className="item-info-title">{item.title}</div>
+                    <div className="item-info-actions">
                         {this.props.showControls ? (
                             <ButtonGroup>
                                 {!(this.props.isLiked || this.props.isHated) ? [

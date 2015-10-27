@@ -15,9 +15,10 @@
     -webkit-touch-callout: none;
 
     .item-top {
-        max-height: 190px;
+        height: 190px;
         overflow: hidden;
         border-bottom: $border-style;
+        background-color: #555;
 
         .item-image {
             opacity: 0.65;
@@ -31,14 +32,17 @@
 
         margin: 0 3px 3px 5px;
 
-        width: 190px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        .item-info-title {
+            display: inline-block;
+            width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
-        .item-info-id {
-            color: #bbb;
-            margin-right: 6px;
+        .item-info-actions {
+            float: right;
+            display: inline-block;
         }
     }
 
