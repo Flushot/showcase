@@ -4,7 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { retrievePath, retrieveValue } from 'redux-falcor';
+// import { retrievePath, retrieveValue } from 'redux-falcor';
 import _ from 'lodash';
 import { Badge, Nav, Navbar, NavBrand, NavItem, NavDropdown, MenuItem, Glyphicon,
          Grid, Row, Col, Panel, Modal, Button, ProgressBar } from 'react-bootstrap';
@@ -27,9 +27,9 @@ class App extends Component {
         const { dispatch } = this.props;
         const actions = bindActionCreators(Actions, dispatch);
         const itemProps = {
-            likedItemIds: this.props.get('likedItemIds'),
-            hatedItemIds: this.props.get('hatedItemIds'),
-            selectedItemId: this.props.get('selectedItemId'),
+            likedItemIds: this.props.state.get('likedItemIds'),
+            hatedItemIds: this.props.state.get('hatedItemIds'),
+            selectedItemId: this.props.state.get('selectedItemId'),
             onItemSelected: itemId => actions.selectItem(itemId),
             onItemLiked: itemId => actions.likeItem(itemId),
             onItemHated: itemId => actions.hateItem(itemId),
@@ -43,8 +43,8 @@ class App extends Component {
                     <Nav right eventKey={0}> {/* This is the eventKey referenced */}
                         <NavItem eventKey={1} onClick={e => actions.showLikesDialog()}>
                             <span>Liked</span>
-                            {this.props.get('likedItemIds').count() > 0 ? (
-                                <Badge style={{marginLeft: '4px'}}>{this.props.get('likedItemIds').count()}</Badge>
+                            {this.props.state.get('likedItemIds').count() > 0 ? (
+                                <Badge style={{marginLeft: '4px'}}>{this.props.state.get('likedItemIds').count()}</Badge>
                             ) : ''}
                         </NavItem>
                         <NavItem eventKey={2} href="#" disabled>Popular</NavItem>
@@ -78,26 +78,26 @@ class App extends Component {
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="All Items"
-                                      items={this.props.get('items')}
+                                      items={this.props.state.get('items')}
                                       showControls={true}
                                       {...itemProps}/>
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="My Liked Items"
-                                      items={this.props.get('items').filter(item => this.props.get('likedItemIds').has(item.id))}
+                                      items={this.props.state.get('items').filter(item => this.props.state.get('likedItemIds').has(item.id))}
                                       showControls={false}
                                       {...itemProps}/>
                         </Col>
                     </Row>
                 </Grid>
-                {this.props.get('editingSettings') ? (
+                {this.props.state.get('editingSettings') ? (
                     <SettingsDialog onSave={newSettings => actions.saveSettings(newSettings)}
                                     onCancel={() => actions.cancelSettings()}/>
                 ) : ''}
-                {this.props.get('showLikesDialog') ? (
+                {this.props.state.get('showLikesDialog') ? (
                     <LikedItemsDialog onClose={() => actions.closeLikesDialog()}
-                                      items={this.props.get('items').filter(item => this.props.get('likedItemIds').has(item.id))}
-                                      likedItemIds={this.props.get('likedItemIds')}
+                                      items={this.props.state.get('items').filter(item => this.props.state.get('likedItemIds').has(item.id))}
+                                      likedItemIds={this.props.state.get('likedItemIds')}
                                       onItemLiked={itemId => actions.likeItem(itemId)}
                                       onItemHated={itemId => actions.hateItem(itemId)}
                                       onClearRating={itemId => actions.clearRating(itemId)}/>
@@ -107,21 +107,23 @@ class App extends Component {
     }
 
     getTotalItems() {
-        return this.props.get('items').count();
+        return this.props.state.get('items').count();
     }
 
     getPercentLikedItems() {
-        return this.props.get('likedItemIds').count() / (this.getTotalItems() / 100);
+        return this.props.state.get('likedItemIds').count() / (this.getTotalItems() / 100);
     }
 
     getPercentHatedItems() {
-        return this.props.get('hatedItemIds').count() / (this.getTotalItems() / 100);
+        return this.props.state.get('hatedItemIds').count() / (this.getTotalItems() / 100);
     }
 }
 
 
 function mapStateToProps(state) {
-    return state;
+    return {
+        state
+    };
 }
 
 

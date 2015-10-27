@@ -1,5 +1,3 @@
-import { combineReducers } from 'redux';
-import { falcorReducer } from 'redux-falcor';
 import _ from 'lodash';
 import { Map, List, Set } from 'immutable';
 
