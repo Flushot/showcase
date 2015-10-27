@@ -25,7 +25,7 @@ export default class Item extends Component {
                             height: height + 'px'
                          }}/>
                     {this.props.isHated ? (
-                        <img src="http://www.clipartbest.com/cliparts/MTL/LxL/MTLLxLzrc.gif"
+                        <img src="http://www.theeastside.org/assets/gui/tomato/es_tomato-splat-4.png"
                              style={{
                                 position: 'absolute',
                                 top: 0,

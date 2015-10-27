@@ -13,20 +13,25 @@ export default class ItemGrid extends Component {
     render() {
         const itemGrid = this;
         return (
-            <Panel header={this.getTitle()}>
+            <Panel className="item-grid"
+                   header={this.getTitle()}>
 
-                {this.props.items.map(function(item) {
-                    return <Item key={item.id}
-                                 item={item}
-                                 showControls={itemGrid.props.showControls}
-                                 isLiked={itemGrid.props.likedItemIds.has(item.id)}
-                                 isHated={itemGrid.props.hatedItemIds.has(item.id)}
-                                 isSelected={itemGrid.props.selectedItemId == item.id}
-                                 onClick={e => itemGrid.props.onItemSelected(item.id)}
-                                 onLiked={e => itemGrid.props.onItemLiked(item.id)}
-                                 onHated={e => itemGrid.props.onItemHated(item.id)}
-                                 onClearRating={e => itemGrid.props.onClearRating(item.id)}/>;
-                })}
+                {this.props.items.length > 0 ? (
+                    this.props.items.map(function(item) {
+                        return <Item key={item.id}
+                                     item={item}
+                                     showControls={itemGrid.props.showControls}
+                                     isLiked={itemGrid.props.likedItemIds.has(item.id)}
+                                     isHated={itemGrid.props.hatedItemIds.has(item.id)}
+                                     isSelected={itemGrid.props.selectedItemId == item.id}
+                                     onClick={e => itemGrid.props.onItemSelected(item.id)}
+                                     onLiked={e => itemGrid.props.onItemLiked(item.id)}
+                                     onHated={e => itemGrid.props.onItemHated(item.id)}
+                                     onClearRating={e => itemGrid.props.onClearRating(item.id)}/>;
+                    })
+                ) : (
+                    <span className="item-grid-empty">{this.props.emptyMessage}</span>
+                )}
 
             </Panel>
         );
@@ -42,13 +47,17 @@ export default class ItemGrid extends Component {
             }
         }
 
-        return <div>{title}</div>;
+        if (title.length > 0)
+            return <div>{title}</div>;
+        else
+            return '';
     }
 }
 
 ItemGrid.propTypes = {
     title: PropTypes.string,
     items: PropTypes.array,
+    emptyMessage: PropTypes.string,
     selectedItemId: PropTypes.number,
     showControls: PropTypes.bool,
     likedItemIds: ImmutablePropTypes.set,
@@ -62,6 +71,7 @@ ItemGrid.propTypes = {
 ItemGrid.defaultProps = {
     title: null,
     items: [],
+    emptyMessage: 'Nothing here.',
     selectedItemId: null,
     showControls: true,
     likedItemIds: List([]),

@@ -13,7 +13,9 @@ const initialState = Map({
     hatedItemIds: Set(),
 
     editingSettings: false,
-    settings: Map()
+    settings: Map(),
+
+    showLikedItemsDialog: false
 });
 
 
@@ -54,6 +56,16 @@ export function reducer(state = initialState, action) {
         case Actions.CANCEL_SETTINGS:
             return state.merge({
                 editingSettings: false
+            });
+
+        case Actions.SHOW_LIKES_DIALOG:
+            return state.merge({
+                showLikesDialog: true
+            });
+
+        case Actions.CLOSE_LIKES_DIALOG:
+            return state.merge({
+                showLikesDialog: false
             });
 
         default:

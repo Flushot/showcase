@@ -1,15 +1,12 @@
 .item-grid {
-	width: 100%;
+    .item-grid-title {
+    }
+    
+    .item-grid-items {
+    }
 
-	.item-grid-title {
-		text-align: center;
-
-		font-family: 'Segoe UI', sans-serif;
-		font-size: 1.2em;
-	}
-	
-	.item-grid-items {
-		padding-left: 16px;
-		padding-right: 16px;
-	}
+    .item-grid-empty {
+        font-style: italic;
+        font-color: #eee;
+    }
 }

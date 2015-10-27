@@ -6,18 +6,19 @@ import { bindActionCreators } from 'redux';
 import { retrievePath, retrieveValue } from 'redux-falcor';
 import _ from 'lodash';
 import { Badge, Nav, Navbar, NavBrand, NavItem, NavDropdown, MenuItem, Glyphicon,
-         Grid, Row, Col, Panel, Modal, Button } from 'react-bootstrap';
+         Grid, Row, Col, Panel, Modal, Button, ProgressBar } from 'react-bootstrap';
 
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 import ItemGrid from './itemGrid';
 import SettingsDialog from './settingsDialog';
+import LikedItemsDialog from './likedItemsDialog';
 
 
 class App extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
-        dispatch(retrievePath('items[0..4]["title","id"]'));
+        dispatch(retrievePath('items[0..9]["title","id"]'));
     }
 
     render() {
@@ -38,7 +39,7 @@ class App extends Component {
                 <Navbar inverse toggleNavKey={0}>
                     <NavBrand><Glyphicon glyph="camera"/> Showcase</NavBrand>
                     <Nav right eventKey={0}> {/* This is the eventKey referenced */}
-                        <NavItem eventKey={1} href="#">
+                        <NavItem eventKey={1} onClick={e => actions.showLikesDialog()}>
                             <span>Liked</span>
                             {this.props.local.get('likedItemIds').count() > 0 ? (
                                 <Badge style={{marginLeft: '4px'}}>{this.props.local.get('likedItemIds').count()}</Badge>
@@ -62,19 +63,11 @@ class App extends Component {
                 <Grid>
                     <Row className="show-grid">
                         <Col md={12} lg={12} sm={12} xs={12}>
-                            <Panel header="Stats">
-                                <table className="table">
-                                    <tbody>
-                                    <tr>
-                                        <th>Liked</th>
-                                        <td>{this.props.local.get('likedItemIds').count()}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Hated</th>
-                                        <td>{this.props.local.get('hatedItemIds').count()}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                            <Panel header="Like-o-Meter">
+                                <ProgressBar>
+                                    <ProgressBar bsStyle="success" now={this.getPercentLikedItems()}/>
+                                    <ProgressBar bsStyle="danger" now={this.getPercentHatedItems()}/>
+                                </ProgressBar>
                             </Panel>
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
@@ -96,8 +89,33 @@ class App extends Component {
                     <SettingsDialog onSave={newSettings => actions.saveSettings(newSettings)}
                                     onCancel={() => actions.cancelSettings()}/>
                 ) : ''}
+                {this.props.local.get('showLikesDialog') ? (
+                    <LikedItemsDialog onClose={() => actions.closeLikesDialog()}
+                                      items={this.props.remote.items}
+                                      likedItemIds={this.props.local.get('likedItemIds')}
+                                      onItemLiked={itemId => actions.likeItem(itemId)}
+                                      onItemHated={itemId => actions.hateItem(itemId)}
+                                      onClearRating={itemId => actions.clearRating(itemId)}/>
+                ) : ''}
             </div>
         );
+    }
+
+    getTotalItems() {
+        if (!this.props.remote.items) {
+            return 0;
+        }
+        else {
+            return Object.keys(this.props.remote.items).length;
+        }
+    }
+
+    getPercentLikedItems() {
+        return this.props.local.get('likedItemIds').count() / (this.getTotalItems() / 100);
+    }
+
+    getPercentHatedItems() {
+        return this.props.local.get('hatedItemIds').count() / (this.getTotalItems() / 100);
     }
 }
 

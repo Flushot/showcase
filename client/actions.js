@@ -5,6 +5,8 @@ export const CLEAR_RATING = 'CLEAR_RATING';
 export const EDIT_SETTINGS = 'EDIT_SETTINGS';
 export const SAVE_SETTINGS = 'SAVE_SETTINGS';
 export const CANCEL_SETTINGS = 'CANCEL_SETTINGS';
+export const SHOW_LIKES_DIALOG = 'SHOW_LIKES_DIALOG';
+export const CLOSE_LIKES_DIALOG = 'CLOSE_LIKES_DIALOG';
 
 
 export function selectItem(itemId) {
@@ -51,5 +53,17 @@ export function saveSettings(settings) {
 export function cancelSettings() {
     return {
         type: CANCEL_SETTINGS
+    };
+}
+
+export function showLikesDialog() {
+    return {
+        type: SHOW_LIKES_DIALOG
+    };
+}
+
+export function closeLikesDialog() {
+    return {
+        type: CLOSE_LIKES_DIALOG
     };
 }
