@@ -13,7 +13,8 @@ export default class ItemGrid extends Component {
     render() {
         const itemGrid = this;
         return (
-            <Panel className="item-grid"
+            <Panel className="item-grid" 
+                   onClick={e => itemGrid.props.onItemSelected(null)}
                    header={this.getTitle()}>
 
                 {this.props.isRefreshing ? (
@@ -27,7 +28,7 @@ export default class ItemGrid extends Component {
                                          isLiked={itemGrid.props.likedItemIds.has(item.id)}
                                          isHated={itemGrid.props.hatedItemIds.has(item.id)}
                                          isSelected={itemGrid.props.selectedItemId == item.id}
-                                         onClick={e => itemGrid.props.onItemSelected(item.id)}
+                                         onClick={e => itemGrid.handleSelection(e, item.id)}
                                          onLiked={e => itemGrid.props.onItemLiked(item.id)}
                                          onHated={e => itemGrid.props.onItemHated(item.id)}
                                          onClearRating={e => itemGrid.props.onClearRating(item.id)}/>;
@@ -39,6 +40,11 @@ export default class ItemGrid extends Component {
 
             </Panel>
         );
+    }
+
+    handleSelection(e, itemId) {
+        e.stopPropagation();
+        this.props.onItemSelected(itemId);
     }
 
     getTitle() {

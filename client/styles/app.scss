@@ -16,3 +16,12 @@
         opacity: 1.0;
     }
 }
+
+.selected-item {
+    .selected-item-image {
+        margin-top: 10px;
+    }
+    .selected-item-title {
+        color: #ddd;
+    }
+}

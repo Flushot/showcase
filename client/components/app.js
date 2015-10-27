@@ -26,10 +26,11 @@ class App extends Component {
     render() {
         const { dispatch } = this.props;
         const actions = bindActionCreators(Actions, dispatch);
+        const selectedItemId = this.props.state.get('selectedItemId');
         const itemProps = {
             likedItemIds: this.props.state.get('likedItemIds'),
             hatedItemIds: this.props.state.get('hatedItemIds'),
-            selectedItemId: this.props.state.get('selectedItemId'),
+            selectedItemId: selectedItemId,
             onItemSelected: itemId => actions.selectItem(itemId),
             onItemLiked: itemId => actions.likeItem(itemId),
             onItemHated: itemId => actions.hateItem(itemId),
@@ -83,7 +84,21 @@ class App extends Component {
                                       showControls={true}
                                       {...itemProps}/>
                         </Col>
-                        <Col md={6} lg={6} sm={12} xs={12}>
+                        {selectedItemId ? (
+                            <Col md={3} lg={3} sm={12} xs={12}>
+                                <Panel header={<span>Selected Item</span>}>
+                                    <div className="selected-item">
+                                        <div className="selected-item-title">
+                                            {this.getSelectedItem().title}
+                                        </div>
+                                        <div className="selected-item-image">
+                                            <img src={this.getSelectedItem().url} style={{maxWidth: '230px'}}/>
+                                        </div>
+                                    </div>
+                                </Panel>
+                            </Col>
+                        ) : ''}
+                        <Col md={selectedItemId ? 3 : 6} lg={selectedItemId ? 3 : 6} sm={12} xs={12}>
                             <ItemGrid title="My Liked Items"
                                       items={this.props.state.get('items').filter(item => this.props.state.get('likedItemIds').has(item.id))}
                                       isRefreshing={this.props.state.get('refreshingItems')}
@@ -106,6 +121,13 @@ class App extends Component {
                 ) : ''}
             </div>
         );
+    }
+
+    getSelectedItem() {
+        const selectedItemId = this.props.state.get('selectedItemId');
+        const matches = this.props.state.get('items').filter(item => item.id === selectedItemId);
+        if (matches.count() > 0)
+            return matches.first();
     }
 
     getTotalItems() {

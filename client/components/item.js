@@ -2,7 +2,7 @@ import '../styles/item.scss';
 
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
-import { Button, ButtonGroup, Glyphicon, OverlayTrigger, Label } from 'react-bootstrap';
+import { Button, ButtonGroup, Glyphicon, OverlayTrigger, Popover, Label } from 'react-bootstrap';
 
 import * as Utils from '../utils';
 
