@@ -20,10 +20,21 @@ export function startRefreshingItems() {
         });
         fetch('/items/')
             .then(function(response) {
-                response.json()
-                    .then(function(response) {
-                        dispatch(itemsRefreshed(response));
-                    });
+                if (response.status < 200 || response.status > 299) {
+                    response.json()
+                        .then(function(response) {
+                            if (response.data.error)
+                                alert(response.data.error);
+                            else
+                                alert('Error ' + response.status);
+                        })
+                }
+                else {
+                    response.json()
+                        .then(function(response) {
+                            dispatch(itemsRefreshed(response));
+                        });
+                }
             });
     }
 }
