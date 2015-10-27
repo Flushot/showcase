@@ -79,12 +79,14 @@ class App extends Component {
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="All Items"
                                       items={this.props.state.get('items')}
+                                      isRefreshing={this.props.state.get('refreshingItems')}
                                       showControls={true}
                                       {...itemProps}/>
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="My Liked Items"
                                       items={this.props.state.get('items').filter(item => this.props.state.get('likedItemIds').has(item.id))}
+                                      isRefreshing={this.props.state.get('refreshingItems')}
                                       showControls={false}
                                       {...itemProps}/>
                         </Col>

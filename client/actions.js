@@ -15,6 +15,9 @@ export const CLOSE_LIKES_DIALOG = 'CLOSE_LIKES_DIALOG';
 
 export function startRefreshingItems() {
     return function(dispatch) {
+        dispatch({
+            type: START_REFRESHING_ITEMS
+        });
         fetch('/items/')
             .then(function(response) {
                 response.json()

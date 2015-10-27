@@ -16,21 +16,25 @@ export default class ItemGrid extends Component {
             <Panel className="item-grid"
                    header={this.getTitle()}>
 
-                {this.props.items.count() > 0 ? (
-                    this.props.items.map(function(item) {
-                        return <Item key={item.id}
-                                     item={item}
-                                     showControls={itemGrid.props.showControls}
-                                     isLiked={itemGrid.props.likedItemIds.has(item.id)}
-                                     isHated={itemGrid.props.hatedItemIds.has(item.id)}
-                                     isSelected={itemGrid.props.selectedItemId == item.id}
-                                     onClick={e => itemGrid.props.onItemSelected(item.id)}
-                                     onLiked={e => itemGrid.props.onItemLiked(item.id)}
-                                     onHated={e => itemGrid.props.onItemHated(item.id)}
-                                     onClearRating={e => itemGrid.props.onClearRating(item.id)}/>;
-                    })
+                {this.props.isRefreshing ? (
+                    <span className="item-grid-empty">Loading data...</span>
                 ) : (
-                    <span className="item-grid-empty">{this.props.emptyMessage}</span>
+                    this.props.items.count() > 0 ? (
+                        this.props.items.map(function(item) {
+                            return <Item key={item.id}
+                                         item={item}
+                                         showControls={itemGrid.props.showControls}
+                                         isLiked={itemGrid.props.likedItemIds.has(item.id)}
+                                         isHated={itemGrid.props.hatedItemIds.has(item.id)}
+                                         isSelected={itemGrid.props.selectedItemId == item.id}
+                                         onClick={e => itemGrid.props.onItemSelected(item.id)}
+                                         onLiked={e => itemGrid.props.onItemLiked(item.id)}
+                                         onHated={e => itemGrid.props.onItemHated(item.id)}
+                                         onClearRating={e => itemGrid.props.onClearRating(item.id)}/>;
+                        })
+                    ) : (
+                        <span className="item-grid-empty">{this.props.emptyMessage}</span>
+                    )
                 )}
 
             </Panel>
@@ -60,6 +64,7 @@ ItemGrid.propTypes = {
     emptyMessage: PropTypes.string,
     selectedItemId: PropTypes.string,
     showControls: PropTypes.bool,
+    isRefreshing: PropTypes.bool,
     likedItemIds: ImmutablePropTypes.set,
     hatedItemIds: ImmutablePropTypes.set,
     onItemSelected: PropTypes.func.isRequired,
@@ -74,6 +79,7 @@ ItemGrid.defaultProps = {
     emptyMessage: 'Nothing here.',
     selectedItemId: null,
     showControls: true,
+    isRefreshing: false,
     likedItemIds: List([]),
     hatedItemIds: List([])
 };
