@@ -14,9 +14,15 @@
     -webkit-user-select: none;
     -webkit-touch-callout: none;
 
-    .item-image {
-        opacity: 0.65;
+    .item-top {
+        height: 190px;
+        overflow: hidden;
         border-bottom: $border-style;
+        background-color: #555;
+
+        .item-image {
+            opacity: 0.65;
+        }
     }
 
     .item-info {
@@ -26,9 +32,17 @@
 
         margin: 0 3px 3px 5px;
 
-        .item-info-id {
-            color: #bbb;
-            margin-right: 6px;
+        .item-info-title {
+            display: inline-block;
+            width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .item-info-actions {
+            float: right;
+            display: inline-block;
         }
     }
 
@@ -43,10 +57,13 @@
             color: $sel-fore-color;
         }
 
-        .item-image {
-            opacity: 1.0;
-            transition: opacity 0.3s ease-in-out;
+        .item-top {
             border-bottom-color: $sel-back-color;
+            
+            .item-image {
+                opacity: 1.0;
+                transition: opacity 0.3s ease-in-out;
+            }
         }
     }
 }

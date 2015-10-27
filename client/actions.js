@@ -1,3 +1,7 @@
+import 'isomorphic-fetch'; // adds 'fetch()' global
+
+export const START_REFRESHING_ITEMS = 'START_REFRESHING_ITEMS';
+export const ITEMS_REFRESHED = 'ITEMS_REFRESHED';
 export const SELECT_ITEM = 'SELECT_ITEM';
 export const LIKE_ITEM = 'LIKE_ITEM';
 export const HATE_ITEM = 'HATE_ITEM';
@@ -8,6 +12,39 @@ export const CANCEL_SETTINGS = 'CANCEL_SETTINGS';
 export const SHOW_LIKES_DIALOG = 'SHOW_LIKES_DIALOG';
 export const CLOSE_LIKES_DIALOG = 'CLOSE_LIKES_DIALOG';
 
+
+export function startRefreshingItems() {
+    return function(dispatch) {
+        dispatch({
+            type: START_REFRESHING_ITEMS
+        });
+        fetch('/items/')
+            .then(function(response) {
+                if (response.status < 200 || response.status > 299) {
+                    response.json()
+                        .then(function(response) {
+                            if (response.data.error)
+                                alert(response.data.error);
+                            else
+                                alert('Error ' + response.status);
+                        })
+                }
+                else {
+                    response.json()
+                        .then(function(response) {
+                            dispatch(itemsRefreshed(response));
+                        });
+                }
+            });
+    }
+}
+
+export function itemsRefreshed(items) {
+    return {
+        type: ITEMS_REFRESHED,
+        items: items
+    }
+}
 
 export function selectItem(itemId) {
     return {
