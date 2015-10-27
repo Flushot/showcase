@@ -13,8 +13,7 @@ export default class LikedItemsDialog extends Component {
                 <Modal.Header>My Liked Items</Modal.Header>
 
                 <Modal.Body>
-                    <ItemGrid items={_.filter(this.props.items,
-                                              item => this.props.likedItemIds.has(item.id))}
+                    <ItemGrid items={this.props.items}
                               showControls={true}
                               emptyMessage="It seems you don't like anything."
                               likedItemIds={this.props.likedItemIds}

@@ -14,9 +14,14 @@
     -webkit-user-select: none;
     -webkit-touch-callout: none;
 
-    .item-image {
-        opacity: 0.65;
+    .item-top {
+        max-height: 190px;
+        overflow: hidden;
         border-bottom: $border-style;
+
+        .item-image {
+            opacity: 0.65;
+        }
     }
 
     .item-info {
@@ -25,6 +30,11 @@
         color: $fore-color;
 
         margin: 0 3px 3px 5px;
+
+        width: 190px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 
         .item-info-id {
             color: #bbb;

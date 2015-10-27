@@ -7,6 +7,9 @@ import * as Actions from '../actions';
 
 
 const initialState = Map({
+    items: List(),
+    refreshingItems: false,
+
     selectedItemId: null,
 
     likedItemIds: Set(),
@@ -21,6 +24,17 @@ const initialState = Map({
 
 export function reducer(state = initialState, action) {
     switch (action.type) {
+        case Actions.START_REFRESHING_ITEMS:
+            return state.merge({
+                refreshingItems: true
+            });
+
+        case Actions.ITEMS_REFRESHED:
+            return state.merge({
+                refreshingItems: false,
+                items: List(action.items)
+            });
+
         case Actions.SELECT_ITEM:
             return state.merge({
                 selectedItemId: action.itemId

@@ -17,12 +17,12 @@ export default class Item extends Component {
             <div className={classNames('item', {'selected': this.props.isSelected})}
                  onClick={this.props.onClick}>
 
-                <div style={{position: 'relative'}}>
-                    <img src={Utils.getRandomImage(width, height, item.id)}
+                <div className="item-top" style={{position: 'relative'}}>
+                    <img src={item.url}
                          className="item-image"
                          style={{
-                            width: width + 'px',
-                            height: height + 'px'
+                            width: width + 'px'
+                            //height: height + 'px'
                          }}/>
                     {this.props.isHated ? (
                         <img src="http://www.theeastside.org/assets/gui/tomato/es_tomato-splat-4.png"
@@ -31,8 +31,8 @@ export default class Item extends Component {
                                 top: 0,
                                 left: 0,
                                 opacity: 0.7,
-                                width: width + 'px',
-                                height: height + 'px'
+                                width: width + 'px'
+                                //height: height + 'px'
                              }}/>
                     ) : ''}
                 </div>

@@ -3,6 +3,7 @@ import os
 import datetime
 import json
 import logging
+import requests
 
 #from . import middleware
 
@@ -20,25 +21,57 @@ app.wsgi_app = reduce(lambda x, y: y(x),
                       ],
                       app.wsgi_app)
 
+IMGUR_CLIENT_ID = '531d13764026e5f'
+IMGUR_BEARER_TOKEN = '8baa12d283fb230bf5aaf539dfe468a337cd791a'
+
 
 @app.route('/items/')
 def items():
-    paths = request.args.get('paths')
-    log.info('paths: %s' % paths)
+    response = requests.get('https://api.imgur.com/3/gallery/hot/viral/0.json',
+                            headers={
+                                #'Authorization': 'Bearer %s' % IMGUR_BEARER_TOKEN,
+                                'Authorization': 'Client-ID %s' % IMGUR_CLIENT_ID,
+                                'Accept': 'application/json'
+                            })
 
-    titles = 'foo bar baz bing blah'.split(' ')
-    items = {i: {'id': i, 'title': title} for i, title in enumerate(titles)}
+    if not (199 < response.status_code < 300):
+        return response.text, response.status_code
+
+    items = [
+        {
+            'id': image['id'],
+            'title': image['title'],
+            'url': image['link']
+        }
+        for image in response.json()['data']
+        if not image['is_album'] and image.get('link')
+    ]
 
     return (
-        json.dumps({
-            'jsonGraph': {
-                'items': items
-            },
-            'paths': paths
-        }, indent=4), 
-        200,  # OK
+        json.dumps(items[:30], indent=4),
+        200,
         {'Content-Type': 'application/json'}
     )
+
+
+# @app.route('/items/')
+# def items():
+#     paths = request.args.get('paths')
+#     log.info('paths: %s' % paths)
+
+#     titles = 'foo bar baz bing blah'.split(' ')
+#     items = {i: {'id': i, 'title': title} for i, title in enumerate(titles)}
+
+#     return (
+#         json.dumps({
+#             'jsonGraph': {
+#                 'items': items
+#             },
+#             'paths': paths
+#         }, indent=4), 
+#         200,  # OK
+#         {'Content-Type': 'application/json'}
+#     )
 
 
 def start_server(listen_address, listen_port, debug=False,

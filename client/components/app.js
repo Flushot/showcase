@@ -19,7 +19,8 @@ import LikedItemsDialog from './likedItemsDialog';
 class App extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
-        dispatch(retrievePath('items[0..9]["title","id"]'));
+        //dispatch(retrievePath('items[0..9]["title","id"]'));
+        dispatch(Actions.startRefreshingItems());
     }
 
     render() {
@@ -77,14 +78,13 @@ class App extends Component {
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="All Items"
-                                      items={_.values(this.props.remote.items)}
+                                      items={this.props.local.get('items')}
                                       showControls={true}
                                       {...itemProps}/>
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="My Liked Items"
-                                      items={_.filter(this.props.remote.items,
-                                                      item => this.props.local.get('likedItemIds').has(item.id))}
+                                      items={this.props.local.get('items').filter(item => this.props.local.get('likedItemIds').has(item.id))}
                                       showControls={false}
                                       {...itemProps}/>
                         </Col>
@@ -96,7 +96,7 @@ class App extends Component {
                 ) : ''}
                 {this.props.local.get('showLikesDialog') ? (
                     <LikedItemsDialog onClose={() => actions.closeLikesDialog()}
-                                      items={this.props.remote.items}
+                                      items={this.props.local.get('items').filter(item => this.props.local.get('likedItemIds').has(item.id))}
                                       likedItemIds={this.props.local.get('likedItemIds')}
                                       onItemLiked={itemId => actions.likeItem(itemId)}
                                       onItemHated={itemId => actions.hateItem(itemId)}
@@ -107,12 +107,7 @@ class App extends Component {
     }
 
     getTotalItems() {
-        if (!this.props.remote.items) {
-            return 0;
-        }
-        else {
-            return Object.keys(this.props.remote.items).length;
-        }
+        return this.props.local.get('items').count();
     }
 
     getPercentLikedItems() {

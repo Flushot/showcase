@@ -16,7 +16,7 @@ export default class ItemGrid extends Component {
             <Panel className="item-grid"
                    header={this.getTitle()}>
 
-                {this.props.items.length > 0 ? (
+                {this.props.items.count() > 0 ? (
                     this.props.items.map(function(item) {
                         return <Item key={item.id}
                                      item={item}
@@ -42,8 +42,8 @@ export default class ItemGrid extends Component {
 
         if (this.props.title) {
             title.push(<span>{this.props.title}</span>);
-            if (this.props.items.length) {
-                title.push(<Badge style={{marginLeft: '5px'}}>{this.props.items.length}</Badge>);
+            if (this.props.items.count() > 0) {
+                title.push(<Badge style={{marginLeft: '5px'}}>{this.props.items.count()}</Badge>);
             }
         }
 
@@ -56,9 +56,9 @@ export default class ItemGrid extends Component {
 
 ItemGrid.propTypes = {
     title: PropTypes.string,
-    items: PropTypes.array,
+    items: ImmutablePropTypes.list,
     emptyMessage: PropTypes.string,
-    selectedItemId: PropTypes.number,
+    selectedItemId: PropTypes.string,
     showControls: PropTypes.bool,
     likedItemIds: ImmutablePropTypes.set,
     hatedItemIds: ImmutablePropTypes.set,
