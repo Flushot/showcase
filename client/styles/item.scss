@@ -57,10 +57,13 @@
             color: $sel-fore-color;
         }
 
-        .item-image {
-            opacity: 1.0;
-            transition: opacity 0.3s ease-in-out;
+        .item-top {
             border-bottom-color: $sel-back-color;
+            
+            .item-image {
+                opacity: 1.0;
+                transition: opacity 0.3s ease-in-out;
+            }
         }
     }
 }
