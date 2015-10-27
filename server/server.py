@@ -4,6 +4,7 @@ import datetime
 import json
 import logging
 import requests
+import time
 
 #from . import middleware
 
@@ -47,6 +48,7 @@ def items():
         if not image['is_album'] and image.get('link')
     ]
 
+    # time.sleep(2)
     return (
         json.dumps(items[:30], indent=4),
         200,

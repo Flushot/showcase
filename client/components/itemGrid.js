@@ -3,7 +3,7 @@ import '../styles/itemGrid.scss';
 import React, { Component, PropTypes } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List, Set } from 'immutable';
-import { Panel, Badge } from 'react-bootstrap';
+import { Panel, Badge, ProgressBar } from 'react-bootstrap';
 import _ from 'lodash';
 
 import Item from './item';
@@ -17,7 +17,7 @@ export default class ItemGrid extends Component {
                    header={this.getTitle()}>
 
                 {this.props.isRefreshing ? (
-                    <span className="item-grid-empty">Loading data...</span>
+                    <ProgressBar bsStyle="info" now={100} active striped/>
                 ) : (
                     this.props.items.count() > 0 ? (
                         this.props.items.map(function(item) {
