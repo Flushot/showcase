@@ -16,6 +16,7 @@ export default class LikedItemsDialog extends Component {
                     <ItemGrid items={_.filter(this.props.items,
                                               item => this.props.likedItemIds.has(item.id))}
                               showControls={true}
+                              emptyMessage="It seems you don't like anything."
                               likedItemIds={this.props.likedItemIds}
                               hatedItemIds={Set()}
                               onItemSelected={() => false}

@@ -1,3 +1,18 @@
 .app-content {
     margin: 6px 30px;
 }
+
+.doge {
+    position: absolute;
+    top: 5px;
+    left: 200px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-weight: bold;
+    color: #F39C12;
+    opacity: 0.0;
+    transition: all 0.5s ease-in-out;
+
+    &.doge-visible {
+        opacity: 1.0;
+    }
+}

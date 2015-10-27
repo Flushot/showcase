@@ -1,6 +1,7 @@
 import '../styles/app.scss';
 
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { retrievePath, retrieveValue } from 'redux-falcor';
@@ -45,16 +46,16 @@ class App extends Component {
                                 <Badge style={{marginLeft: '4px'}}>{this.props.local.get('likedItemIds').count()}</Badge>
                             ) : ''}
                         </NavItem>
-                        <NavItem eventKey={2} href="#">Popular</NavItem>
+                        <NavItem eventKey={2} href="#" disabled>Popular</NavItem>
                         <NavDropdown eventKey={3} title="Chris Lyon" id="collapsible-navbar-dropdown">
-                            <MenuItem eventKey="1">
+                            <MenuItem eventKey="1" disabled>
                                 <Glyphicon glyph="user"/> Profile
                             </MenuItem>
                             <MenuItem eventKey="2" onClick={e => actions.editSettings()}>
                                 <Glyphicon glyph="cog"/> Settings
                             </MenuItem>
                             <MenuItem divider />
-                            <MenuItem eventKey="4">
+                            <MenuItem eventKey="4" disabled>
                                 <Glyphicon glyph="off"/> Logout
                             </MenuItem>
                         </NavDropdown>
@@ -68,6 +69,10 @@ class App extends Component {
                                     <ProgressBar bsStyle="success" now={this.getPercentLikedItems()}/>
                                     <ProgressBar bsStyle="danger" now={this.getPercentHatedItems()}/>
                                 </ProgressBar>
+                                <div className={classNames('doge', {'doge-visible': this.getPercentHatedItems() > 0 && this.getPercentLikedItems() === 0})}>
+                                    <div>WOW!! SO HATE!!!</div>
+                                    <img src="http://i.imgur.com/BKvBZbr.png" width="150"/>
+                                </div>
                             </Panel>
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
