@@ -54,26 +54,6 @@ def items():
     )
 
 
-# @app.route('/items/')
-# def items():
-#     paths = request.args.get('paths')
-#     log.info('paths: %s' % paths)
-
-#     titles = 'foo bar baz bing blah'.split(' ')
-#     items = {i: {'id': i, 'title': title} for i, title in enumerate(titles)}
-
-#     return (
-#         json.dumps({
-#             'jsonGraph': {
-#                 'items': items
-#             },
-#             'paths': paths
-#         }, indent=4), 
-#         200,  # OK
-#         {'Content-Type': 'application/json'}
-#     )
-
-
 def start_server(listen_address, listen_port, debug=False,
                  ssl_public_key_file=None, ssl_private_key_file=None):
     import paste.httpserver

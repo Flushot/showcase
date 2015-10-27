@@ -24,7 +24,6 @@
     "file-loader": "^0.8.4",
     "gulp": "^3.9.0",
     "html-webpack-plugin": "^1.6.2",
-    "isomorphic-fetch": "^2.1.1",
     "karma": "^0.13.11",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.1",
@@ -56,10 +55,9 @@
   "dependencies": {
     "classnames": "^2.2.0",
     "deprecated": "0.0.1",
-    "falcor": "^0.1.13",
-    "falcor-http-datasource": "^0.1.2",
     "immutable": "^3.7.5",
     "invariant": "^2.1.1",
+    "isomorphic-fetch": "^2.1.1",
     "lodash": "^3.10.1",
     "react": "^0.14.0",
     "react-bootstrap": "^0.27.2",
@@ -67,7 +65,6 @@
     "react-immutable-proptypes": "^1.2.3",
     "react-redux": "^3.1.0",
     "redux": "^3.0.2",
-    "redux-falcor": "^2.3.0",
     "redux-thunk": "^1.0.0"
   }
 }

@@ -27,9 +27,9 @@ class App extends Component {
         const { dispatch } = this.props;
         const actions = bindActionCreators(Actions, dispatch);
         const itemProps = {
-            likedItemIds: this.props.local.get('likedItemIds'),
-            hatedItemIds: this.props.local.get('hatedItemIds'),
-            selectedItemId: this.props.local.get('selectedItemId'),
+            likedItemIds: this.props.get('likedItemIds'),
+            hatedItemIds: this.props.get('hatedItemIds'),
+            selectedItemId: this.props.get('selectedItemId'),
             onItemSelected: itemId => actions.selectItem(itemId),
             onItemLiked: itemId => actions.likeItem(itemId),
             onItemHated: itemId => actions.hateItem(itemId),
@@ -43,8 +43,8 @@ class App extends Component {
                     <Nav right eventKey={0}> {/* This is the eventKey referenced */}
                         <NavItem eventKey={1} onClick={e => actions.showLikesDialog()}>
                             <span>Liked</span>
-                            {this.props.local.get('likedItemIds').count() > 0 ? (
-                                <Badge style={{marginLeft: '4px'}}>{this.props.local.get('likedItemIds').count()}</Badge>
+                            {this.props.get('likedItemIds').count() > 0 ? (
+                                <Badge style={{marginLeft: '4px'}}>{this.props.get('likedItemIds').count()}</Badge>
                             ) : ''}
                         </NavItem>
                         <NavItem eventKey={2} href="#" disabled>Popular</NavItem>
@@ -78,26 +78,26 @@ class App extends Component {
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="All Items"
-                                      items={this.props.local.get('items')}
+                                      items={this.props.get('items')}
                                       showControls={true}
                                       {...itemProps}/>
                         </Col>
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="My Liked Items"
-                                      items={this.props.local.get('items').filter(item => this.props.local.get('likedItemIds').has(item.id))}
+                                      items={this.props.get('items').filter(item => this.props.get('likedItemIds').has(item.id))}
                                       showControls={false}
                                       {...itemProps}/>
                         </Col>
                     </Row>
                 </Grid>
-                {this.props.local.get('editingSettings') ? (
+                {this.props.get('editingSettings') ? (
                     <SettingsDialog onSave={newSettings => actions.saveSettings(newSettings)}
                                     onCancel={() => actions.cancelSettings()}/>
                 ) : ''}
-                {this.props.local.get('showLikesDialog') ? (
+                {this.props.get('showLikesDialog') ? (
                     <LikedItemsDialog onClose={() => actions.closeLikesDialog()}
-                                      items={this.props.local.get('items').filter(item => this.props.local.get('likedItemIds').has(item.id))}
-                                      likedItemIds={this.props.local.get('likedItemIds')}
+                                      items={this.props.get('items').filter(item => this.props.get('likedItemIds').has(item.id))}
+                                      likedItemIds={this.props.get('likedItemIds')}
                                       onItemLiked={itemId => actions.likeItem(itemId)}
                                       onItemHated={itemId => actions.hateItem(itemId)}
                                       onClearRating={itemId => actions.clearRating(itemId)}/>
@@ -107,15 +107,15 @@ class App extends Component {
     }
 
     getTotalItems() {
-        return this.props.local.get('items').count();
+        return this.props.get('items').count();
     }
 
     getPercentLikedItems() {
-        return this.props.local.get('likedItemIds').count() / (this.getTotalItems() / 100);
+        return this.props.get('likedItemIds').count() / (this.getTotalItems() / 100);
     }
 
     getPercentHatedItems() {
-        return this.props.local.get('hatedItemIds').count() / (this.getTotalItems() / 100);
+        return this.props.get('hatedItemIds').count() / (this.getTotalItems() / 100);
     }
 }
 
