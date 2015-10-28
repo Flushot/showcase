@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { Button, Modal } from 'react-bootstrap';
 import { Set } from 'immutable';
 
@@ -6,7 +7,15 @@ import ItemGrid from './itemGrid';
 
 
 export default class LikedItemsDialog extends Component {
+    static propTypes = {
+        onItemLiked: PropTypes.func.isRequired,
+        onItemHated: PropTypes.func.isRequired,
+        onClearRating: PropTypes.func.isRequired,
+        onClose: PropTypes.func.isRequired
+    }
+
     render() {
+        console.log('likedIds: %o', this.props.items.map(item => item.id).toJS());
         return (
             <Modal.Dialog onHide={() => this.handleCloseClick()}>
 
@@ -16,7 +25,7 @@ export default class LikedItemsDialog extends Component {
                     <ItemGrid items={this.props.items}
                               showControls={true}
                               emptyMessage="It seems you don't like anything."
-                              likedItemIds={this.props.likedItemIds}
+                              likedItemIds={this.props.items.map(item => item.id)}
                               hatedItemIds={Set()}
                               onItemSelected={() => false}
                               onItemLiked={this.props.onItemLiked}
@@ -35,12 +44,4 @@ export default class LikedItemsDialog extends Component {
     handleCloseClick(e) {
         this.props.onClose();
     }
-}
-
-
-LikedItemsDialog.propTypes = {
-    onItemLiked: PropTypes.func.isRequired,
-    onItemHated: PropTypes.func.isRequired,
-    onClearRating: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired
 }

@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, request
 from werkzeug.contrib.fixers import ProxyFix
+from flask_socketio import SocketIO
 
 from .middleware import HTTPMethodOverrideMiddleware
 
@@ -19,3 +20,13 @@ app.wsgi_app = reduce(lambda x, y: y(x),
                           ProxyFix
                       ],
                       app.wsgi_app)
+
+socketio = SocketIO(app)
+
+# CORS
+@app.after_request
+def after_request(response):
+	response.headers.add('Access-Control-Allow-Origin', '*')
+	# response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+	# response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+	return response

@@ -4,66 +4,58 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-// import { retrievePath, retrieveValue } from 'redux-falcor';
 import _ from 'lodash';
 import { Badge, Nav, Navbar, NavBrand, NavItem, NavDropdown, MenuItem, Glyphicon,
          Grid, Row, Col, Panel, Modal, Button, ProgressBar } from 'react-bootstrap';
+import io from 'socket.io-client';
 
 import * as Actions from '../actions';
 import * as Utils from '../utils';
+
+import Menu from './menu';
 import ItemGrid from './itemGrid';
+import Doge from './doge';
 import SettingsDialog from './settingsDialog';
 import LikedItemsDialog from './likedItemsDialog';
+
+
+console.log('Init socket.io...');
+const socket = io(`${location.protocol}//${location.hostname}:8888`);
+socket.on('pong', function(data) {
+    console.log('PONG! %o', data);
+});
+socket.emit('ping', {});
 
 
 class App extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
-        //dispatch(retrievePath('items[0..9]["title","id"]'));
         dispatch(Actions.startRefreshingItems());
     }
 
     render() {
-        const { dispatch } = this.props;
-        const actions = bindActionCreators(Actions, dispatch);
-        const selectedItemId = this.props.state.get('selectedItemId');
-        const itemProps = {
-            likedItemIds: this.props.state.get('likedItemIds'),
-            hatedItemIds: this.props.state.get('hatedItemIds'),
-            selectedItemId: selectedItemId,
-            onItemSelected: itemId => actions.selectItem(itemId),
-            onItemLiked: itemId => actions.likeItem(itemId),
-            onItemHated: itemId => actions.hateItem(itemId),
-            onClearRating: itemId => actions.clearRating(itemId)
-        }
+        const { dispatch } = this.props,
+              actions = bindActionCreators(Actions, dispatch),
+              selectedItemId = this.props.state.get('selectedItemId'),
+              itemProps = {
+                  likedItemIds: this.props.state.get('likedItemIds'),
+                  hatedItemIds: this.props.state.get('hatedItemIds'),
+                  selectedItemId: selectedItemId,
+              },
+              itemEvents = {
+                  onItemSelected: itemId => actions.selectItem(itemId),
+                  onItemLiked: itemId => actions.likeItem(itemId),
+                  onItemHated: itemId => actions.hateItem(itemId),
+                  onClearRating: itemId => actions.clearRating(itemId)
+              };
 
         return (
             <div>
-                <Navbar inverse toggleNavKey={0}>
-                    <NavBrand><Glyphicon glyph="camera"/> Showcase</NavBrand>
-                    <Nav right eventKey={0}> {/* This is the eventKey referenced */}
-                        <NavItem eventKey={1} onClick={e => actions.showLikesDialog()}>
-                            <span>Liked</span>
-                            {this.props.state.get('likedItemIds').count() > 0 ? (
-                                <Badge style={{marginLeft: '4px'}}>{this.props.state.get('likedItemIds').count()}</Badge>
-                            ) : ''}
-                        </NavItem>
-                        <NavItem eventKey={2} href="#" disabled>Popular</NavItem>
-                        <NavDropdown eventKey={3} title="Chris Lyon" id="collapsible-navbar-dropdown">
-                            <MenuItem eventKey="1" disabled>
-                                <Glyphicon glyph="user"/> Profile
-                            </MenuItem>
-                            <MenuItem eventKey="2" onClick={e => actions.editSettings()}>
-                                <Glyphicon glyph="cog"/> Settings
-                            </MenuItem>
-                            <MenuItem divider />
-                            <MenuItem eventKey="4" disabled>
-                                <Glyphicon glyph="off"/> Logout
-                            </MenuItem>
-                        </NavDropdown>
-                    </Nav>
-                </Navbar>
-                <Grid>
+                <Menu actions={actions}
+                      settings={this.props.state.get('settings')}
+                      likedItemIds={this.props.state.get('likedItemIds')}/>
+
+                <Grid style={{width: '90%'}}>
                     <Row className="show-grid">
                         <Col md={12} lg={12} sm={12} xs={12}>
                             <Panel header="Like-o-Meter">
@@ -71,25 +63,26 @@ class App extends Component {
                                     <ProgressBar bsStyle="success" now={this.getPercentLikedItems()}/>
                                     <ProgressBar bsStyle="danger" now={this.getPercentHatedItems()}/>
                                 </ProgressBar>
-                                <div className={classNames('doge', {'doge-visible': this.getPercentHatedItems() > 0 && this.getPercentLikedItems() === 0})}>
-                                    <div>WOW!! SO HATE!!!</div>
-                                    <img src="http://i.imgur.com/BKvBZbr.png" width="150"/>
-                                </div>
+                                <Doge isVisible={this.getPercentHatedItems() > 0 && this.getPercentLikedItems() === 0}/>
                             </Panel>
                         </Col>
+                    </Row>
+                    <Row className="show-grid">
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="All Items"
                                       items={this.props.state.get('items')}
                                       isRefreshing={this.props.state.get('refreshingItems')}
                                       showControls={true}
-                                      {...itemProps}/>
+                                      {...itemProps}
+                                      {...itemEvents}/>
                         </Col>
                         {selectedItemId ? (
                             <Col md={3} lg={3} sm={12} xs={12}>
                                 <Panel header={<span>Selected Item</span>}>
                                     <div className="selected-item">
                                         <div className="selected-item-title">
-                                            {this.getSelectedItem().title}
+                                            <strong>{this.getSelectedItem().title}</strong>
+                                            <p>{this.getSelectedItem().description}</p>
                                         </div>
                                         <div className="selected-item-image">
                                             <img src={this.getSelectedItem().url} style={{maxWidth: '230px'}}/>
@@ -103,29 +96,29 @@ class App extends Component {
                                       items={this.props.state.get('items').filter(item => this.props.state.get('likedItemIds').has(item.id))}
                                       isRefreshing={this.props.state.get('refreshingItems')}
                                       showControls={false}
-                                      {...itemProps}/>
+                                      {...itemProps}
+                                      {...itemEvents}/>
                         </Col>
                     </Row>
                 </Grid>
                 {this.props.state.get('editingSettings') ? (
-                    <SettingsDialog onSave={newSettings => actions.saveSettings(newSettings)}
+                    <SettingsDialog settings={this.props.state.get('settings')}
+                                    onSave={newSettings => actions.saveSettings(newSettings)}
                                     onCancel={() => actions.cancelSettings()}/>
                 ) : ''}
                 {this.props.state.get('showLikesDialog') ? (
                     <LikedItemsDialog onClose={() => actions.closeLikesDialog()}
                                       items={this.props.state.get('items').filter(item => this.props.state.get('likedItemIds').has(item.id))}
-                                      likedItemIds={this.props.state.get('likedItemIds')}
-                                      onItemLiked={itemId => actions.likeItem(itemId)}
-                                      onItemHated={itemId => actions.hateItem(itemId)}
-                                      onClearRating={itemId => actions.clearRating(itemId)}/>
+                                      {...itemEvents}/>
                 ) : ''}
             </div>
         );
     }
 
     getSelectedItem() {
-        const selectedItemId = this.props.state.get('selectedItemId');
-        const matches = this.props.state.get('items').filter(item => item.id === selectedItemId);
+        const selectedItemId = this.props.state.get('selectedItemId'),
+              matches = this.props.state.get('items').filter(item => item.id === selectedItemId);
+
         if (matches.count() > 0)
             return matches.first();
     }

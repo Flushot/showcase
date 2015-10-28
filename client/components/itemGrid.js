@@ -1,6 +1,7 @@
 import '../styles/itemGrid.scss';
 
 import React, { Component, PropTypes } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List, Set } from 'immutable';
 import { Panel, Badge, ProgressBar } from 'react-bootstrap';
@@ -10,8 +11,40 @@ import Item from './item';
 
 
 export default class ItemGrid extends Component {
+    static mixins = [
+        PureRenderMixin
+    ]
+
+    static propTypes = {
+        title: PropTypes.string,
+        items: ImmutablePropTypes.list,
+        emptyMessage: PropTypes.string,
+        selectedItemId: PropTypes.string,
+        showControls: PropTypes.bool,
+        isRefreshing: PropTypes.bool,
+        likedItemIds: ImmutablePropTypes.set,
+        hatedItemIds: ImmutablePropTypes.set,
+        onItemSelected: PropTypes.func.isRequired,
+        onItemLiked: PropTypes.func.isRequired,
+        onItemHated: PropTypes.func.isRequired,
+        onClearRating: PropTypes.func.isRequired
+    }
+
+    static defaultProps = {
+        title: null,
+        items: [],
+        emptyMessage: 'Nothing here.',
+        selectedItemId: null,
+        showControls: true,
+        isRefreshing: false,
+        likedItemIds: List([]),
+        hatedItemIds: List([])
+    }
+
     render() {
         const itemGrid = this;
+        console.log('items: %o', 
+                    itemGrid.props.items.map(item => item.id + ':' + itemGrid.props.likedItemIds.has(item.id)).toJS());
         return (
             <Panel className="item-grid" 
                    onClick={e => itemGrid.props.onItemSelected(null)}
@@ -63,29 +96,3 @@ export default class ItemGrid extends Component {
             return '';
     }
 }
-
-ItemGrid.propTypes = {
-    title: PropTypes.string,
-    items: ImmutablePropTypes.list,
-    emptyMessage: PropTypes.string,
-    selectedItemId: PropTypes.string,
-    showControls: PropTypes.bool,
-    isRefreshing: PropTypes.bool,
-    likedItemIds: ImmutablePropTypes.set,
-    hatedItemIds: ImmutablePropTypes.set,
-    onItemSelected: PropTypes.func.isRequired,
-    onItemLiked: PropTypes.func.isRequired,
-    onItemHated: PropTypes.func.isRequired,
-    onClearRating: PropTypes.func.isRequired
-};
-
-ItemGrid.defaultProps = {
-    title: null,
-    items: [],
-    emptyMessage: 'Nothing here.',
-    selectedItemId: null,
-    showControls: true,
-    isRefreshing: false,
-    likedItemIds: List([]),
-    hatedItemIds: List([])
-};

@@ -1,16 +1,32 @@
 import React, { Component, PropTypes } from 'react';
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
 import { Button, Modal, Input } from 'react-bootstrap';
 
 
-export default class SettingsDialog extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+const SettingsDialog = React.createClass({
+    mixins: [
+        LinkedStateMixin
+    ],
 
-        };
-    }
+    propTypes: {
+        onSave: PropTypes.func.isRequired,
+        onCancel: PropTypes.func.isRequired
+    },
 
-    render() {
+    getInitialState: function() {
+        return this.props.settings.toJS();
+    },
+
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         firstName: 'Chris',
+    //         lastName: 'Lyon',
+    //         spamMe: false
+    //     };
+    // }
+
+    render: function() {
         return (
             <Modal.Dialog onHide={() => this.handleCancelClick()}>
 
@@ -18,10 +34,20 @@ export default class SettingsDialog extends Component {
 
                 <Modal.Body>
                     <form className="form-horizontal">
-                        <Input ref="firstName" type="text" label="First Name" labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
-                        <Input ref="lastName" type="text" label="Last Name" labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
-                        <Input ref="spamMe" type="checkbox" label="Subscribe to spam" wrapperClassName="col-xs-offset-2 col-xs-10"
+
+                        <Input ref="firstName" type="text" label="First Name" 
+                               valueLink={this.linkState('firstName')}
+                               labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
+
+                        <Input ref="lastName" type="text" label="Last Name"
+                               valueLink={this.linkState('lastName')}
+                               labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
+
+                        <Input ref="spamMe" type="checkbox" label="Subscribe to spam"
+                               valueLink={this.linkState('spamMe')}
+                               wrapperClassName="col-xs-offset-2 col-xs-10"
                                help="Do you want to receive spam in your inbox?"/>
+
                     </form>
                 </Modal.Body>
 
@@ -33,19 +59,16 @@ export default class SettingsDialog extends Component {
 
             </Modal.Dialog>
         );
-    }
+    },
 
-    handleSaveClick(e) {
+    handleSaveClick: function(e) {
         this.props.onSave(this.state);
-    }
+    },
 
-    handleCancelClick(e) {
+    handleCancelClick: function(e) {
         this.props.onCancel();
     }
-}
+});
 
 
-SettingsDialog.propTypes = {
-    onSave: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired
-}
+export default SettingsDialog;

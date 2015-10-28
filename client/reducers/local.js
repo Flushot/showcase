@@ -14,7 +14,11 @@ const initialState = Map({
     hatedItemIds: Set(),
 
     editingSettings: false,
-    settings: Map(),
+    settings: Map({
+        firstName: 'Chris',
+        lastName: 'Lyon',
+        spamMe: false
+    }),
 
     showLikedItemsDialog: false
 });

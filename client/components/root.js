@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { Provider } from 'react-redux';
 import App from './app';
 import configureStore from '../configureStore';
