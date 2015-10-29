@@ -85,7 +85,7 @@ class App extends Component {
                                             <p>{this.getSelectedItem().description}</p>
                                         </div>
                                         <div className="selected-item-image">
-                                            <img src={this.getSelectedItem().url} style={{maxWidth: '230px'}}/>
+                                            <img src={this.getSelectedItem().full_url} style={{maxWidth: '230px'}}/>
                                         </div>
                                     </div>
                                 </Panel>

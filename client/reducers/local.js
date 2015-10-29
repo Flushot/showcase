@@ -43,9 +43,10 @@ export function reducer(state = initialState, action) {
             });
 
         case Actions.ITEMS_REFRESHED:
+            // Append new items
             return Object.assign({}, state, {
                 refreshingItems: false,
-                items: action.items
+                items: state.items.concat(action.items.filter(item => state.items.find(x => x.id === item.id) === undefined))
             });
 
         case Actions.SELECT_ITEM:
@@ -77,7 +78,7 @@ export function reducer(state = initialState, action) {
         case Actions.SAVE_SETTINGS:
             return Object.assign({}, state, {
                 editingSettings: false,
-                settings: Map(action.settings)
+                settings: action.settings
             }, {deep: true});
 
         case Actions.CANCEL_SETTINGS:

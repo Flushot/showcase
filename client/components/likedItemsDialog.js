@@ -17,18 +17,23 @@ export default class LikedItemsDialog extends Component {
         return (
             <Modal.Dialog onHide={() => this.handleCloseClick()}>
 
-                <Modal.Header>My Liked Items</Modal.Header>
+                <Modal.Header closeButton
+                              onHide={() => this.handleCloseClick()}>
+                    My Liked Items
+                </Modal.Header>
 
                 <Modal.Body>
-                    <ItemGrid items={this.props.items}
-                              showControls={true}
-                              emptyMessage="It seems you don't like anything."
-                              likedItemIds={this.props.items.map(item => item.id)}
-                              hatedItemIds={[]}
-                              onItemSelected={() => false}
-                              onItemLiked={this.props.onItemLiked}
-                              onItemHated={this.props.onItemHated}
-                              onClearRating={this.props.onClearRating}/>
+                    <div style={{maxHeight: '400px', overflow: 'auto'}}>
+                        <ItemGrid items={this.props.items}
+                                  showControls={true}
+                                  emptyMessage="It seems you don't like anything."
+                                  likedItemIds={this.props.items.map(item => item.id)}
+                                  hatedItemIds={[]}
+                                  onItemSelected={() => false}
+                                  onItemLiked={this.props.onItemLiked}
+                                  onItemHated={this.props.onItemHated}
+                                  onClearRating={this.props.onClearRating}/>
+                    </div>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -39,7 +44,7 @@ export default class LikedItemsDialog extends Component {
         );
     }
 
-    handleCloseClick(e) {
+    handleCloseClick() {
         this.props.onClose();
     }
 }

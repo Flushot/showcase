@@ -28,9 +28,12 @@ const SettingsDialog = React.createClass({
 
     render: function() {
         return (
-            <Modal.Dialog onHide={() => this.handleCancelClick()}>
+            <Modal.Dialog onHide={() => this.handleCloseClick()}>
 
-                <Modal.Header>Settings</Modal.Header>
+                <Modal.Header closeButton
+                              onHide={() => this.handleCloseClick()}>
+                    Settings
+                </Modal.Header>
 
                 <Modal.Body>
                     <form className="form-horizontal">
@@ -54,18 +57,18 @@ const SettingsDialog = React.createClass({
                 <Modal.Footer>
                     <Button bsStyle="primary"
                             onClick={e => this.handleSaveClick()}>Save</Button>
-                    <Button onClick={e => this.handleCancelClick()}>Cancel</Button>
+                    <Button onClick={e => this.handleCloseClick()}>Cancel</Button>
                 </Modal.Footer>
 
             </Modal.Dialog>
         );
     },
 
-    handleSaveClick: function(e) {
+    handleSaveClick: function() {
         this.props.onSave(this.state);
     },
 
-    handleCancelClick: function(e) {
+    handleCloseClick: function() {
         this.props.onCancel();
     }
 });
