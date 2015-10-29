@@ -10,6 +10,15 @@ import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
 
 const store = configureStore();
 
+if (Storage !== undefined) {
+    store.subscribe(function() {
+        const state = store.getState();
+        sessionStorage.uiState = JSON.stringify(state);
+    });
+}
+else {
+    alert("Your browser doesn't support localStorage. State will not persist!");
+}
 
 export default class Root extends Component {
     render() {

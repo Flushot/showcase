@@ -3,25 +3,36 @@ import _ from 'lodash';
 import * as Actions from '../actions';
 
 
-// Initial UI state
-const initialState = {
-    items: [],
-    refreshingItems: false,
+var initialState;
 
-    selectedItemId: null,
+// Attempt to restore state from storage
+if (Storage !== undefined) {
+    initialState = sessionStorage.uiState;
+    if (initialState !== undefined)
+        initialState = JSON.parse(initialState);
+}
 
-    likedItemIds: [],
-    hatedItemIds: [],
+// Default UI state
+if (initialState === undefined) {
+    initialState = {
+        items: [],
+        refreshingItems: false,
 
-    editingSettings: false,
-    settings: {
-        firstName: 'Chris',
-        lastName: 'Lyon',
-        spamMe: false
-    },
+        selectedItemId: null,
 
-    showLikedItemsDialog: false
-};
+        likedItemIds: [],
+        hatedItemIds: [],
+
+        editingSettings: false,
+        settings: {
+            firstName: 'Chris',
+            lastName: 'Lyon',
+            spamMe: false
+        },
+
+        showLikedItemsDialog: false
+    };
+}
 
 
 export function reducer(state = initialState, action) {
