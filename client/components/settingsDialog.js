@@ -14,7 +14,7 @@ const SettingsDialog = React.createClass({
     },
 
     getInitialState: function() {
-        return this.props.settings.toJS();
+        return Object.assign({}, this.props.settings);
     },
 
     // constructor(props) {

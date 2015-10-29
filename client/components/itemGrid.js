@@ -2,8 +2,6 @@ import '../styles/itemGrid.scss';
 
 import React, { Component, PropTypes } from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
-import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Map, List, Set } from 'immutable';
 import { Panel, Badge, ProgressBar } from 'react-bootstrap';
 import _ from 'lodash';
 
@@ -17,13 +15,13 @@ export default class ItemGrid extends Component {
 
     static propTypes = {
         title: PropTypes.string,
-        items: ImmutablePropTypes.list,
+        // items: ImmutablePropTypes.list,
         emptyMessage: PropTypes.string,
         selectedItemId: PropTypes.string,
         showControls: PropTypes.bool,
         isRefreshing: PropTypes.bool,
-        likedItemIds: ImmutablePropTypes.set,
-        hatedItemIds: ImmutablePropTypes.set,
+        // likedItemIds: ImmutablePropTypes.set,
+        // hatedItemIds: ImmutablePropTypes.set,
         onItemSelected: PropTypes.func.isRequired,
         onItemLiked: PropTypes.func.isRequired,
         onItemHated: PropTypes.func.isRequired,
@@ -37,14 +35,12 @@ export default class ItemGrid extends Component {
         selectedItemId: null,
         showControls: true,
         isRefreshing: false,
-        likedItemIds: List([]),
-        hatedItemIds: List([])
+        likedItemIds: [],
+        hatedItemIds: []
     }
 
     render() {
         const itemGrid = this;
-        console.log('items: %o', 
-                    itemGrid.props.items.map(item => item.id + ':' + itemGrid.props.likedItemIds.has(item.id)).toJS());
         return (
             <Panel className="item-grid" 
                    onClick={e => itemGrid.props.onItemSelected(null)}
@@ -53,14 +49,14 @@ export default class ItemGrid extends Component {
                 {this.props.isRefreshing ? (
                     <ProgressBar bsStyle="info" now={100} active striped/>
                 ) : (
-                    this.props.items.count() > 0 ? (
+                    this.props.items.length > 0 ? (
                         this.props.items.map(function(item) {
                             return <Item key={item.id}
                                          item={item}
                                          showControls={itemGrid.props.showControls}
-                                         isLiked={itemGrid.props.likedItemIds.has(item.id)}
-                                         isHated={itemGrid.props.hatedItemIds.has(item.id)}
-                                         isSelected={itemGrid.props.selectedItemId == item.id}
+                                         isLiked={itemGrid.props.likedItemIds.find(id => id === item.id) !== undefined}
+                                         isHated={itemGrid.props.hatedItemIds.find(id => id === item.id) !== undefined}
+                                         isSelected={itemGrid.props.selectedItemId === item.id}
                                          onClick={e => itemGrid.handleSelection(e, item.id)}
                                          onLiked={e => itemGrid.props.onItemLiked(item.id)}
                                          onHated={e => itemGrid.props.onItemHated(item.id)}
@@ -84,9 +80,9 @@ export default class ItemGrid extends Component {
         var title = [];
 
         if (this.props.title) {
-            title.push(<span>{this.props.title}</span>);
-            if (this.props.items.count() > 0) {
-                title.push(<Badge style={{marginLeft: '5px'}}>{this.props.items.count()}</Badge>);
+            title.push(<span key="a">{this.props.title}</span>);
+            if (this.props.items.length > 0) {
+                title.push(<Badge key="b" style={{marginLeft: '5px'}}>{this.props.items.length}</Badge>);
             }
         }
 

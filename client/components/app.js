@@ -19,12 +19,12 @@ import SettingsDialog from './settingsDialog';
 import LikedItemsDialog from './likedItemsDialog';
 
 
-console.log('Init socket.io...');
-const socket = io(`${location.protocol}//${location.hostname}:8888`);
-socket.on('pong', function(data) {
-    console.log('PONG! %o', data);
-});
-socket.emit('ping', {});
+// console.log('Init socket.io...');
+// const socket = io(`${location.protocol}//${location.hostname}:8888`);
+// socket.on('pong', function(data) {
+//     console.log('PONG! %o', data);
+// });
+// socket.emit('ping', {});
 
 
 class App extends Component {
@@ -36,10 +36,10 @@ class App extends Component {
     render() {
         const { dispatch } = this.props,
               actions = bindActionCreators(Actions, dispatch),
-              selectedItemId = this.props.state.get('selectedItemId'),
+              selectedItemId = this.props.state.selectedItemId,
               itemProps = {
-                  likedItemIds: this.props.state.get('likedItemIds'),
-                  hatedItemIds: this.props.state.get('hatedItemIds'),
+                  likedItemIds: this.props.state.likedItemIds,
+                  hatedItemIds: this.props.state.hatedItemIds,
                   selectedItemId: selectedItemId,
               },
               itemEvents = {
@@ -52,8 +52,8 @@ class App extends Component {
         return (
             <div>
                 <Menu actions={actions}
-                      settings={this.props.state.get('settings')}
-                      likedItemIds={this.props.state.get('likedItemIds')}/>
+                      settings={this.props.state.settings}
+                      likedItemIds={this.props.state.likedItemIds}/>
 
                 <Grid style={{width: '90%'}}>
                     <Row className="show-grid">
@@ -70,8 +70,8 @@ class App extends Component {
                     <Row className="show-grid">
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="All Items"
-                                      items={this.props.state.get('items')}
-                                      isRefreshing={this.props.state.get('refreshingItems')}
+                                      items={this.props.state.items}
+                                      isRefreshing={this.props.state.refreshingItems}
                                       showControls={true}
                                       {...itemProps}
                                       {...itemEvents}/>
@@ -93,22 +93,22 @@ class App extends Component {
                         ) : ''}
                         <Col md={selectedItemId ? 3 : 6} lg={selectedItemId ? 3 : 6} sm={12} xs={12}>
                             <ItemGrid title="My Liked Items"
-                                      items={this.props.state.get('items').filter(item => this.props.state.get('likedItemIds').has(item.id))}
-                                      isRefreshing={this.props.state.get('refreshingItems')}
+                                      items={this.props.state.items.filter(item => this.props.state.likedItemIds.find(id => id === item.id) !== undefined)}
+                                      isRefreshing={this.props.state.refreshingItems}
                                       showControls={false}
                                       {...itemProps}
                                       {...itemEvents}/>
                         </Col>
                     </Row>
                 </Grid>
-                {this.props.state.get('editingSettings') ? (
-                    <SettingsDialog settings={this.props.state.get('settings')}
+                {this.props.state.editingSettings ? (
+                    <SettingsDialog settings={this.props.state.settings}
                                     onSave={newSettings => actions.saveSettings(newSettings)}
                                     onCancel={() => actions.cancelSettings()}/>
                 ) : ''}
-                {this.props.state.get('showLikesDialog') ? (
+                {this.props.state.showLikesDialog ? (
                     <LikedItemsDialog onClose={() => actions.closeLikesDialog()}
-                                      items={this.props.state.get('items').filter(item => this.props.state.get('likedItemIds').has(item.id))}
+                                      items={this.props.state.items.filter(item => this.props.state.likedItemIds.find(id => id === item.id) !== undefined)}
                                       {...itemEvents}/>
                 ) : ''}
             </div>
@@ -116,23 +116,20 @@ class App extends Component {
     }
 
     getSelectedItem() {
-        const selectedItemId = this.props.state.get('selectedItemId'),
-              matches = this.props.state.get('items').filter(item => item.id === selectedItemId);
-
-        if (matches.count() > 0)
-            return matches.first();
+        const selectedItemId = this.props.state.selectedItemId;
+        return this.props.state.items.find(item => item.id === selectedItemId);
     }
 
     getTotalItems() {
-        return this.props.state.get('items').count();
+        return this.props.state.items.length;
     }
 
     getPercentLikedItems() {
-        return this.props.state.get('likedItemIds').count() / (this.getTotalItems() / 100);
+        return this.props.state.likedItemIds.length / (this.getTotalItems() / 100);
     }
 
     getPercentHatedItems() {
-        return this.props.state.get('hatedItemIds').count() / (this.getTotalItems() / 100);
+        return this.props.state.hatedItemIds.length / (this.getTotalItems() / 100);
     }
 }
 

@@ -6,10 +6,7 @@ import classNames from 'classnames';
 import { Button, ButtonGroup, Glyphicon, OverlayTrigger, Popover, Label } from 'react-bootstrap';
 
 import * as Utils from '../utils';
-
-function displayIf(boolExpr, trueDom, falseDom='') {
-    return boolExpr ? trueDom : falseDom;
-}
+const { displayIf } = Utils;
 
 
 export default class Item extends Component {
@@ -49,7 +46,7 @@ export default class Item extends Component {
                             delayShow={500}
                             rootClose={true}
                             overlay={
-                                <Popover>
+                                <Popover id={'item-' + item.id + '-' + Utils.uniqueId()}>
                                     <h4>{item.title}</h4>
                                     {displayIf(item.description, (
                                         <div>
@@ -62,8 +59,6 @@ export default class Item extends Component {
 
                 <div className={classNames('item', {'selected': this.props.isSelected})}
                      onClick={this.props.onClick}>
-
-                    <span>liked? {this.props.isLiked ? 'yes' : 'no'}</span>
 
                     <div className="item-top" style={{position: 'relative'}}>
 

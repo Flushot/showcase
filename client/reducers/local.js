@@ -1,86 +1,86 @@
 import _ from 'lodash';
-import { Map, List, Set } from 'immutable';
 
 import * as Actions from '../actions';
 
 
-const initialState = Map({
-    items: List(),
+// Initial UI state
+const initialState = {
+    items: [],
     refreshingItems: false,
 
     selectedItemId: null,
 
-    likedItemIds: Set(),
-    hatedItemIds: Set(),
+    likedItemIds: [],
+    hatedItemIds: [],
 
     editingSettings: false,
-    settings: Map({
+    settings: {
         firstName: 'Chris',
         lastName: 'Lyon',
         spamMe: false
-    }),
+    },
 
     showLikedItemsDialog: false
-});
+};
 
 
 export function reducer(state = initialState, action) {
     switch (action.type) {
         case Actions.START_REFRESHING_ITEMS:
-            return state.merge({
+            return Object.assign({}, state, {
                 refreshingItems: true
             });
 
         case Actions.ITEMS_REFRESHED:
-            return state.merge({
+            return Object.assign({}, state, {
                 refreshingItems: false,
-                items: List(action.items)
+                items: action.items
             });
 
         case Actions.SELECT_ITEM:
-            return state.merge({
+            return Object.assign({}, state, {
                 selectedItemId: action.itemId
             });
 
         case Actions.LIKE_ITEM:
-            return state.merge({
-                likedItemIds: state.get('likedItemIds').add(action.itemId)
+            return Object.assign({}, state, {
+                likedItemIds: state.likedItemIds.concat(action.itemId)
             });
 
         case Actions.HATE_ITEM:
-            return state.merge({
-                hatedItemIds: state.get('hatedItemIds').add(action.itemId)
+            return Object.assign({}, state, {
+                hatedItemIds: state.hatedItemIds.concat(action.itemId)
             });
 
         case Actions.CLEAR_RATING:
-            return state.merge({
-                likedItemIds: state.get('likedItemIds').remove(action.itemId),
-                hatedItemIds: state.get('hatedItemIds').remove(action.itemId)
+            return Object.assign({}, state, {
+                likedItemIds: state.likedItemIds.filter(id => id !== action.itemId),
+                hatedItemIds: state.hatedItemIds.filter(id => id !== action.itemId)
             });
 
         case Actions.EDIT_SETTINGS:
-            return state.merge({
+            return Object.assign({}, state, {
                 editingSettings: true
             });
 
         case Actions.SAVE_SETTINGS:
-            return state.merge({
+            return Object.assign({}, state, {
                 editingSettings: false,
                 settings: Map(action.settings)
-            });
+            }, {deep: true});
 
         case Actions.CANCEL_SETTINGS:
-            return state.merge({
+            return Object.assign({}, state, {
                 editingSettings: false
             });
 
         case Actions.SHOW_LIKES_DIALOG:
-            return state.merge({
+            return Object.assign({}, state, {
                 showLikesDialog: true
             });
 
         case Actions.CLOSE_LIKES_DIALOG:
-            return state.merge({
+            return Object.assign({}, state, {
                 showLikesDialog: false
             });
 

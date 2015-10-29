@@ -88,7 +88,7 @@ var config = assign({},
                     loader: 'url-loader?limit=8192'
                 },
                 {
-                    test: /\.(woff2?|ttf|eot|svg)$/,
+                    test: /\.(woff2?|ttf|eot|svg|ico)$/,
                     loader: 'file-loader'
                 }
             ]

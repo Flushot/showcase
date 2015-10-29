@@ -22,3 +22,13 @@ export function stopPropagationHandler(handler) {
         handler(e);
     }
 }
+
+
+export function displayIf(boolExpr, trueDom, falseDom='') {
+    return boolExpr ? trueDom : falseDom;
+}
+
+
+export function uniqueId() {
+  return Math.floor((1 + Math.random()) * 0x10000);
+}
