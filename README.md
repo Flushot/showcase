@@ -19,7 +19,7 @@ Run the Gulp build process (which will also start the webpack dev proxy server):
 
     gulp dev
 
-Browse to: http://localhost:3000
+Browse to: [http://localhost:3000](http://localhost:3000)
 
 ## Testing
 
