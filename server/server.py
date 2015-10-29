@@ -41,7 +41,8 @@ def items():
             'id': image['id'],
             'title': image['title'],
             'description': image['description'],
-            'url': url_for('.image', encodedLink=base64.b64encode(image['link'])),
+            # 'url': url_for('.image', encodedLink=base64.b64encode(image['link'])),
+            'url': image['link'],
             'full_url': image['link']
         }
         for image in response.json()['data']
