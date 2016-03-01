@@ -3,8 +3,8 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { Provider } from 'react-redux';
 import App from './app';
 import configureStore from '../configureStore';
-import DiffMonitor from 'redux-devtools-diff-monitor';
-import SliderMonitor from 'redux-slider-monitor';
+//import DiffMonitor from 'redux-devtools-diff-monitor';
+//import SliderMonitor from 'redux-slider-monitor';
 
 import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
 
@@ -27,13 +27,12 @@ export default class Root extends Component {
                 <Provider store={store}>
                     <App/>
                 </Provider>
-                <DiffDebugger/>
             </div>
         );
     }
 }
 
-
+/*
 class DiffDebugger extends Component {
     render() {
         return (
@@ -43,7 +42,6 @@ class DiffDebugger extends Component {
         );
     }
 }
-
 
 class SliderDebugger extends Component {
     render() {
@@ -57,3 +55,4 @@ class SliderDebugger extends Component {
         );
     }
 }
+*/

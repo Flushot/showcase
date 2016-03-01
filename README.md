@@ -1,25 +1,12 @@
-## Getting Started
+## Installation
 
-Assumptions:
+1. Copy this project to your PHP web server so that it's mounted under the /showcase URL.
+2. Install NPM.
+3. Build client-side scripts:
 
-* npm and node.js are installed
-* python 2.7 and pip are installed
-
-Install libraries:
-
+    cd <project_root>
     npm install -g gulp-cli karma-cli mocha
-    pip install -r server/requirements.txt
     npm install
-
-Run the Python API server in its own terminal:
-
-    ./dev_server
-
-Run the Gulp build process (which will also start the webpack dev proxy server):
-
-    gulp dev
-
-Browse to: [http://localhost:3000](http://localhost:3000)
 
 ## Testing
 
