@@ -1,4 +1,5 @@
 var gulp = require('gulp'),
+    rimraf = require('gulp-rimraf'),
     webpack = require('webpack'),
     WebpackDevServer = require('webpack-dev-server'),
     path = require('path'),
@@ -29,4 +30,35 @@ gulp.task('dev', function() {
     });
 });
 
+gulp.task('js', ['js:clean'], function(done) {
+    webpack(config).run(handleWebpackCompletion.bind(this, done));
+});
+
+gulp.task('js:watch', ['js:clean'], function(done) {
+    webpack(config).watch({}, handleWebpackCompletion.bind(this, done));
+});
+
+gulp.task('js:clean', function() {
+    return gulp.src([config.output.path]).pipe(rimraf());
+});
+
 gulp.task('default', ['dev']);
+
+
+/**
+ * Handles async completion of webpack compilation.
+ *
+ * @param {function} done function to call after completion.
+ * @param {string} err error message.
+ * @param {object} stats success: compilation stats.
+ */
+function handleWebpackCompletion(done, err, stats) {
+    if (err) {
+        // Compile failed
+        console.error(err);
+    }
+    else {
+        // Compile succeeded
+        console.log(stats.toString());
+    }
+}

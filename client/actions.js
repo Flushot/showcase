@@ -1,22 +1,30 @@
 import 'isomorphic-fetch'; // adds 'fetch()' global
+import { Enum } from 'enumify';
 
-export const START_REFRESHING_ITEMS = 'START_REFRESHING_ITEMS';
-export const ITEMS_REFRESHED = 'ITEMS_REFRESHED';
-export const SELECT_ITEM = 'SELECT_ITEM';
-export const LIKE_ITEM = 'LIKE_ITEM';
-export const HATE_ITEM = 'HATE_ITEM';
-export const CLEAR_RATING = 'CLEAR_RATING';
-export const EDIT_SETTINGS = 'EDIT_SETTINGS';
-export const SAVE_SETTINGS = 'SAVE_SETTINGS';
-export const CANCEL_SETTINGS = 'CANCEL_SETTINGS';
-export const SHOW_LIKES_DIALOG = 'SHOW_LIKES_DIALOG';
-export const CLOSE_LIKES_DIALOG = 'CLOSE_LIKES_DIALOG';
+export class ActionTypes extends Enum {};
+ActionTypes.initEnum([
+    'START_REFRESHING_ITEMS',
+    'ITEMS_REFRESHED',
+
+    'SELECT_ITEM',
+
+    'LIKE_ITEM',
+    'HATE_ITEM',
+    'CLEAR_RATING',
+
+    'EDIT_SETTINGS',
+    'SAVE_SETTINGS',
+    'CANCEL_SETTINGS',
+
+    'SHOW_LIKES_DIALOG',
+    'CLOSE_LIKES_DIALOG'
+]);
 
 
 export function startRefreshingItems() {
     return function(dispatch) {
         dispatch({
-            type: START_REFRESHING_ITEMS
+            type: ActionTypes.START_REFRESHING_ITEMS
         });
         fetch('/items/')
             .then(function(response) {
@@ -41,66 +49,58 @@ export function startRefreshingItems() {
 
 export function itemsRefreshed(items) {
     return {
-        type: ITEMS_REFRESHED,
+        type: ActionTypes.ITEMS_REFRESHED,
         items: items
     }
 }
 
 export function selectItem(itemId) {
     return {
-        type: SELECT_ITEM,
+        type: ActionTypes.SELECT_ITEM,
         itemId: itemId
     };
 }
 
 export function likeItem(itemId) {
     return {
-        type: LIKE_ITEM,
+        type: ActionTypes.LIKE_ITEM,
         itemId: itemId
     };
 }
 
 export function hateItem(itemId) {
     return {
-        type: HATE_ITEM,
+        type: ActionTypes.HATE_ITEM,
         itemId: itemId
     };
 }
 
 export function clearRating(itemId) {
     return {
-        type: CLEAR_RATING,
+        type: ActionTypes.CLEAR_RATING,
         itemId: itemId
     };
 }
 
 export function editSettings() {
-    return {
-        type: EDIT_SETTINGS
-    };
+    return { type: ActionTypes.EDIT_SETTINGS };
 }
 
 export function saveSettings(settings) {
     return {
-        type: SAVE_SETTINGS,
+        type: ActionTypes.SAVE_SETTINGS,
         settings: settings
     };
 }
 
 export function cancelSettings() {
-    return {
-        type: CANCEL_SETTINGS
-    };
+    return { type: ActionTypes.CANCEL_SETTINGS };
 }
 
 export function showLikesDialog() {
-    return {
-        type: SHOW_LIKES_DIALOG
-    };
+    return { type: ActionTypes.SHOW_LIKES_DIALOG };
 }
 
 export function closeLikesDialog() {
-    return {
-        type: CLOSE_LIKES_DIALOG
-    };
+    return { type: ActionTypes.CLOSE_LIKES_DIALOG };
 }
