@@ -1,6 +1,6 @@
 ## Installation
 
-1. Copy this project to your PHP web server so that it's mounted under the /showcase URL.
+1. Copy this project to your PHP web server and create a vhost root.
 2. Install NPM.
 3. Build client-side scripts:
 

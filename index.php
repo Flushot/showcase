@@ -99,16 +99,29 @@ $app->group('/api', function () use ($app) {
  * Catch-all
  */
 $app->get('/{path:.+}', function ($request, $response, $args) {
-    // TODO: sanitize $filePath so that it's not exploitable
-    $filePath = 'public/' . $args['path'];
-    if (file_exists($filePath)) {
+    $body = $response->getBody();
+
+    // Resolve file path
+    $publicPath = realpath(dirname(__FILE__) . '/public');
+    $rawPath = $publicPath . '/' . $args['path'];
+    $filePath = realpath($rawPath);
+
+    if ($filePath !== false && substr($filePath, 0, strlen($publicPath)) !== $publicPath) {
+        // Someone was probably trying to exploit the file path
+        error_log("Invalid path: $rawPath");
+        $body->write('Go away.');
+        return $response->withStatus(403, 'Forbidden');
+    } elseif ($filePath !== false) {
         // Asset file
         $contents = @file_get_contents($filePath);
-        return $response->getBody()->write($contents);
+        $body->write($contents);
+        return $response;
     } else {
         // Unknown route
         // TODO: return index.html and let client router handle things
-        return $response->withStatus(404, "Asset not found: $filePath");
+        // TODO: check server-side render for a 404
+        $body->write("Asset not found");
+        return $response->withStatus(404, 'Not Found');
     }
 });
 
