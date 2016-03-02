@@ -29,67 +29,117 @@ $app->get('/', function ($request, $response, $args) {
  */
 $app->group('/api', function () use ($app) {
 
-    /**
-     * Hello world test
-     */
-    $app->get('/hello/{name}', function ($request, $response, $args) {
-        return $response->getBody()->write("Hello {$args['name']}");
-    });
+    $app->group('/items', function () use ($app) {
 
-    /**
-     * Item data
-     */
-    $app->get('/items/', function ($request, $response, $args) {
-        $itemLimit = 60;
-        $body = $response->getBody();
+        /**
+         * Get item list
+         */
+        $app->get('/', function ($request, $response, $args) {
+            $itemLimit = 60;
+            $body = $response->getBody();
 
-        $imgurClient = new HttpClient([
-            'base_uri' => 'https://api.imgur.com',
-            'timeout' => 10.0
-        ]);
-
-        try {
-            $imgurResponse = $imgurClient->request('GET', '/3/gallery/hot/viral/0.json', [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Client-ID ' . IMGUR_CLIENT_ID
-                ]
+            $imgurClient = new HttpClient([
+                'base_uri' => 'https://api.imgur.com',
+                'timeout' => 10.0
             ]);
-        } catch (RequestException $ex) {
-            if ($ex->hasResponse()) {
-                $imgurResponse = $ex->getResponse();
-                $body->write('Imgur API error ' .
-                    $imgurResponse->getStatusCode() . ': ' . $imgurResponse->getReasonPhrase());
-            } else {
-                $body->write('Error communicating with Imgur API');
+
+            try {
+                $imgurResponse = $imgurClient->request('GET', '/3/gallery/hot/viral/0.json', [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Client-ID ' . IMGUR_CLIENT_ID
+                    ]
+                ]);
+            } catch (RequestException $ex) {
+                if ($ex->hasResponse()) {
+                    $imgurResponse = $ex->getResponse();
+                    $body->write('Imgur API error ' .
+                        $imgurResponse->getStatusCode() . ': ' . $imgurResponse->getReasonPhrase());
+                } else {
+                    $body->write('Error communicating with Imgur API');
+                }
+
+                return $response
+                    ->withStatus(500, 'API Error')
+                    ->withHeader('Content-Type', 'text/plain');
             }
+
+            $items = [];
+            $imgurBody = json_decode($imgurResponse->getBody(), true);
+            foreach ($imgurBody['data'] as $image) {
+                if (!$image['is_album'] && isset($image['link'])) {
+                    $items [] = [
+                        'id' => $image['id'],
+                        'title' => $image['title'],
+                        'description' => $image['description'],
+                        'url' => $image['link'],
+                        'full_url' => $image['link']
+                    ];
+                }
+            }
+
+            if ($itemLimit !== null) {
+                $items = array_slice($items, 0, $itemLimit);
+            }
+
+            $body->write(json_encode($items,
+                JSON_PRETTY_PRINT | JSON_PARTIAL_OUTPUT_ON_ERROR));
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        /**
+         * Get item
+         */
+        $app->get('/{itemId}', function ($request, $response, $args) {
+            $itemId = $args['itemId'];
+
+            $response->getBody()->write(json_encode([
+                'id' => $itemId,
+                'un' => 'implemented'
+            ]));
 
             return $response
-                ->withStatus(500, 'API Error')
-                ->withHeader('Content-Type', 'text/plain');
-        }
+                ->withStatus(501, 'Unimplemented')
+                ->withHeader('Content-Type', 'application/json');
+        });
 
-        $items = [];
-        $imgurBody = json_decode($imgurResponse->getBody(), true);
-        foreach ($imgurBody['data'] as $image) {
-            if (!$image['is_album'] && isset($image['link'])) {
-                $items [] = [
-                    'id' => $image['id'],
-                    'title' => $image['title'],
-                    'description' => $image['description'],
-                    'url' => $image['link'],
-                    'full_url' => $image['link']
-                ];
-            }
-        }
+        /**
+         * Add item
+         */
+        $app->post('/', function ($request, $response, $args) {
+            $itemData = $request->getParsedBody();
 
-        if ($itemLimit !== null) {
-            $items = array_slice($items, 0, $itemLimit);
-        }
+            // TODO: add item
+            // TODO: return json encoded item and http status 201
 
-        $body->write(json_encode($items,
-            JSON_PRETTY_PRINT | JSON_PARTIAL_OUTPUT_ON_ERROR));
-        return $response->withHeader('Content-Type', 'application/json');
+            return $response->withStatus(501, 'Unimplemented');
+        });
+
+        /**
+         * Update item
+         */
+        $app->patch('/{itemId}', function ($request, $response, $args) {
+            $itemId = $args['itemId'];
+            $itemData = $request->getParsedBody();
+
+            // TODO: update item
+            // TODO: return json encoded item
+
+            return $response->withStatus(501, 'Unimplemented');
+        });
+
+        /**
+         * Delete item
+         */
+        $app->delete('/{itemId}', function ($request, $response, $args) {
+            $itemId = $args['itemId'];
+
+            // TODO: delete item
+            // TODO: return empty body and http status 202
+
+            return $response->withStatus(501, 'Unimplemented');
+        });
+
     });
 
 });
@@ -113,9 +163,16 @@ $app->get('/{path:.+}', function ($request, $response, $args) {
         return $response->withStatus(403, 'Forbidden');
     } elseif ($filePath !== false) {
         // Asset file
-        $contents = @file_get_contents($filePath);
-        $body->write($contents);
-        return $response;
+        $response->withHeader('Content-Type', mime_content_type($filePath));
+        if (is_callable('apache_get_modules') && in_array('mod_xsendfile', apache_get_modules())) {
+            // Apache + mod_xsendfile (zero copy send)
+            return $response->withHeader('X-Sendfile', $filePath);
+        } else {
+            // Generic send
+            $contents = @file_get_contents($filePath);
+            $body->write($contents);
+            return $response->withHeader('Content-Length', filesize($filePath));
+        }
     } else {
         // Unknown route
         // TODO: return index.html and let client router handle things
