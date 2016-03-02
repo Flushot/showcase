@@ -26,7 +26,7 @@ export function startRefreshingItems() {
         dispatch({
             type: ActionTypes.START_REFRESHING_ITEMS
         });
-        fetch('/items/')
+        fetch('/showcase/api/items/')
             .then(function(response) {
                 if (response.status < 200 || response.status > 299) {
                     response.json()

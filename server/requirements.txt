@@ -1,6 +1,0 @@
-flask
-flask-socketio
-pymongo
-requests
-paste
-pillow
