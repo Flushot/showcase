@@ -29,6 +29,103 @@ $app->get('/', function ($request, $response, $args) {
  */
 $app->group('/api', function () use ($app) {
 
+    /**
+     * Session
+     */
+    $app->group('/sessions', function () use ($app) {
+
+        /**
+         * Login
+         */
+        $app->post('/', function ($request, $response, $args) {
+            $credentials = $request->getParsedBody();
+            $body = $response->getBody();
+
+            // TODO: authenticate user
+            if ($credentials['username'] === 'chris' && $credentials['password'] === 'secret') {
+                // Login succeeded
+                // TODO: write session data
+                $body->write(json_encode([
+                    'id' => 'session_id_goes_here',
+                    'user' => [
+                        'id' => 1,
+                        'first_name' => 'Chris',
+                        'last_name' => 'Lyon'
+                    ]
+                ]));
+                return $response->withStatus(201, 'Logged In');
+            } else {
+                // Login failed
+                $body->write('Authentication failed');
+                return $response->withStatus(400, 'Authentication Failed');
+            }
+        });
+
+        /**
+         * Logout
+         */
+        $app->delete('/current', function ($request, $response, $args) {
+            return $response->withStatus(204, 'Logged Out');
+        });
+
+        /**
+         * Get current session data
+         */
+        $app->get('/current', function ($request, $response, $args) {
+            // TODO: get session state
+            $response->getBody()->write(json_encode([
+                'id' => 'session_id_goes_here',
+                'user' => [
+                    'id' => 1,
+                    'first_name' => 'Chris',
+                    'last_name' => 'Lyon'
+                ]
+            ]));
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        /**
+         * Modify session data
+         * (limited to certain variables)
+         */
+        $app->patch('/current', function ($request, $response, $args) {
+            $sessionData = $request->getParsedBody();
+            $allowedVars = ['impersonated_user_id'];
+
+            // TODO: modify session state
+            return $response->withStatus(501, 'Unimplemented');
+        });
+
+        /**
+         * Get all active sessions (admin-only)
+         */
+        $app->get('/', function ($request, $response, $args) {
+            return $response->withStatus(501, 'Unimplemented');
+        });
+
+        /**
+         * Get specific session data (admin-only)
+         */
+        $app->get('/{sessionId}', function ($request, $response, $args) {
+            $sessionId = $args['sessionId'];
+
+            return $response->withStatus(501, 'Unimplemented');
+        });
+
+        /**
+         * Force session to logout (admin-only)
+         */
+        $app->delete('/{sessionId}', function ($request, $response, $args) {
+            $sessionId = $args['sessionId'];
+
+            return $response->withStatus(501, 'Unimplemented');
+        });
+
+    });
+
+    /**
+     * Items
+     */
     $app->group('/items', function () use ($app) {
 
         /**
