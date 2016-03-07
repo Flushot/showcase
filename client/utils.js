@@ -32,3 +32,28 @@ export function displayIf(boolExpr, trueDom, falseDom='') {
 export function uniqueId() {
   return Math.floor((1 + Math.random()) * 0x10000);
 }
+
+
+var initialState;
+
+/**
+ * Gets the initial UI state from local storage.
+ *
+ * @return {object} initial UI state or an empty object if none found.
+ */
+export function getInitialUIState() {
+    if (initialState !== undefined) {
+        return initialState;
+    } else {
+        initialState = {};
+
+        if (typeof Storage !== 'undefined') {
+            var stateBlob = sessionStorage.uiState;
+            if (stateBlob !== undefined) {
+                initialState = JSON.parse(stateBlob);
+            }
+        }
+
+        return initialState;
+    }
+}

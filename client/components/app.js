@@ -36,11 +36,11 @@ class App extends Component {
     render() {
         const { dispatch } = this.props,
               actions = bindActionCreators(Actions, dispatch),
-              selectedItemId = this.props.state.selectedItemId,
+              selectedItemId = this.props.state.items.selectedItemId,
               itemProps = {
-                  likedItemIds: this.props.state.likedItemIds,
-                  hatedItemIds: this.props.state.hatedItemIds,
-                  selectedItemId: selectedItemId,
+                  likedItemIds: this.props.state.likes.likedItemIds,
+                  hatedItemIds: this.props.state.likes.hatedItemIds,
+                  selectedItemId: selectedItemId
               },
               itemEvents = {
                   onItemSelected: itemId => actions.selectItem(itemId),
@@ -52,8 +52,8 @@ class App extends Component {
         return (
             <div>
                 <Menu actions={actions}
-                      settings={this.props.state.settings}
-                      likedItemIds={this.props.state.likedItemIds}/>
+                      settings={this.props.state.settings.data}
+                      likedItemIds={this.props.state.likes.likedItemIds}/>
 
                 <Grid style={{width: '90%'}}>
                     <Row className="show-grid">
@@ -70,8 +70,8 @@ class App extends Component {
                     <Row className="show-grid">
                         <Col md={6} lg={6} sm={12} xs={12}>
                             <ItemGrid title="All Items"
-                                      items={this.props.state.items}
-                                      isRefreshing={this.props.state.refreshingItems}
+                                      items={this.props.state.items.items}
+                                      isRefreshing={this.props.state.items.refreshingItems}
                                       showControls={true}
                                       {...itemProps}
                                       {...itemEvents}/>
@@ -93,22 +93,22 @@ class App extends Component {
                         ) : ''}
                         <Col md={selectedItemId ? 3 : 6} lg={selectedItemId ? 3 : 6} sm={12} xs={12}>
                             <ItemGrid title="My Liked Items"
-                                      items={this.props.state.items.filter(item => this.props.state.likedItemIds.find(id => id === item.id) !== undefined)}
-                                      isRefreshing={this.props.state.refreshingItems}
+                                      items={this.props.state.items.items.filter(item => this.props.state.likes.likedItemIds.find(id => id === item.id) !== undefined)}
+                                      isRefreshing={this.props.state.items.refreshingItems}
                                       showControls={false}
                                       {...itemProps}
                                       {...itemEvents}/>
                         </Col>
                     </Row>
                 </Grid>
-                {this.props.state.editingSettings ? (
-                    <SettingsDialog settings={this.props.state.settings}
+                {this.props.state.settings.editingSettings ? (
+                    <SettingsDialog settings={this.props.state.settings.data}
                                     onSave={newSettings => actions.saveSettings(newSettings)}
                                     onCancel={() => actions.cancelSettings()}/>
                 ) : ''}
-                {this.props.state.showLikesDialog ? (
+                {this.props.state.likes.showLikesDialog ? (
                     <LikedItemsDialog onClose={() => actions.closeLikesDialog()}
-                                      items={this.props.state.items.filter(item => this.props.state.likedItemIds.find(id => id === item.id) !== undefined)}
+                                      items={this.props.state.items.items.filter(item => this.props.state.likes.likedItemIds.find(id => id === item.id) !== undefined)}
                                       {...itemEvents}/>
                 ) : ''}
             </div>
@@ -116,20 +116,20 @@ class App extends Component {
     }
 
     getSelectedItem() {
-        const selectedItemId = this.props.state.selectedItemId;
-        return this.props.state.items.find(item => item.id === selectedItemId);
+        const selectedItemId = this.props.state.items.selectedItemId;
+        return this.props.state.items.items.find(item => item.id === selectedItemId);
     }
 
     getTotalItems() {
-        return this.props.state.items.length;
+        return this.props.state.items.items.length;
     }
 
     getPercentLikedItems() {
-        return this.props.state.likedItemIds.length / (this.getTotalItems() / 100);
+        return this.props.state.likes.likedItemIds.length / (this.getTotalItems() / 100);
     }
 
     getPercentHatedItems() {
-        return this.props.state.hatedItemIds.length / (this.getTotalItems() / 100);
+        return this.props.state.likes.hatedItemIds.length / (this.getTotalItems() / 100);
     }
 }
 

@@ -21,20 +21,30 @@ ActionTypes.initEnum([
 ]);
 
 
+function itemRefreshFailed(errorMessage) {
+    console.error('Error refreshing items: ', errorMessage);
+    alert('Error refreshing items!');
+}
+
 export function startRefreshingItems() {
     return function(dispatch) {
         dispatch({
             type: ActionTypes.START_REFRESHING_ITEMS
         });
-        fetch('/api/items/')
-            .then(function(response) {
-                if (response.status < 200 || response.status > 299) {
+        fetch('/showcase/api/items/')
+            .then(function(response, error) {
+                if (error) {
+                    itemRefreshFailed(error.message);
+                }
+                else if (response.status < 200 || response.status > 299) {
                     response.json()
-                        .then(function(response) {
-                            if (response.data.error)
-                                alert(response.data.error);
-                            else
-                                alert('Error ' + response.status);
+                        .then(function(response, error) {
+                            if (error) {
+                                itemRefreshFailed(error.message);
+                            }
+                            else if (response.data.error) {
+                                itemRefreshFailed(response.data.error);
+                            }
                         })
                 }
                 else {

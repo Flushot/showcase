@@ -1,14 +1,11 @@
-// import { combineReducers } from 'redux';
+import { combineReducers } from 'redux';
+import itemsReducer from './items';
+import likesReducer from './likes';
+import settingsReducer from './settings';
 
-import { reducer as localReducer } from './local';
-// import { reducer as remoteReducer } from './remote';
 
-
-// const rootReducer = combineReducers({
-//     remote: remoteReducer,
-//     local: localReducer
-// });
-
-const rootReducer = localReducer;
-
-export default rootReducer;
+export default combineReducers({
+    items: itemsReducer,
+    likes: likesReducer,
+    settings: settingsReducer
+});
