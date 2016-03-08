@@ -31,7 +31,7 @@ export function startRefreshingItems() {
         dispatch({
             type: ActionTypes.START_REFRESHING_ITEMS
         });
-        fetch('/showcase/api/items/')
+        fetch('/api/items/')
             .then(function(response, error) {
                 if (error) {
                     itemRefreshFailed(error.message);

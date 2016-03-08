@@ -22,7 +22,8 @@ var config = {
 
     output: {
         filename: 'bundle.js',
-        path: path.join(__dirname, 'public')
+        path: path.join(__dirname, 'public'),
+        libraryTarget: 'umd'
     },
 
     // Full list of webpack plugins are available at:

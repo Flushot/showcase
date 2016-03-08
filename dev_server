@@ -1,6 +1,0 @@
-#!/bin/bash
-err=3
-while test "$err" -eq 3; do
-	python -m server
-	err="$?"
-done

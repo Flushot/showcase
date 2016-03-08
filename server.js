@@ -12,6 +12,7 @@ var log = bunyan.createLogger({
 });
 
 var server = restify.createServer({
+    // Splunk-compatible JSON logger
     log: log.child({
         component: 'server',
         level: bunyan.INFO,
@@ -48,11 +49,18 @@ server.on('uncaughtException', function (req, res, route, err) {
 });
 
 
+/**
+ * Test
+ */
 server.get('/hello/:name', function (request, response, next) {
     response.send('Hello ' + request.params.name);
     next();
 });
 
+
+/**
+ * Falcor model
+ */
 server.get('/model.json', falcorRestifyMiddleware(function (request, response) {
     // create a Virtual JSON resource with single key ("greeting")
     return new FalcorRouter([
@@ -70,6 +78,10 @@ server.get('/model.json', falcorRestifyMiddleware(function (request, response) {
     ]);
 }));
 
+
+/**
+ * Render API
+ */
 server.post('/render', function (request, response, next) {
     // TODO: require() compiled webpack scripts
     // TODO: set window.location to url passed in as param
@@ -81,9 +93,22 @@ server.post('/render', function (request, response, next) {
     next();
 });
 
+
+/**
+ * Home page
+ */
+server.get('/', function(request, response, next) {
+    response.redirect('/index.html', next);
+});
+
+
+/**
+ * Static asset
+ */
 server.get(/.+/, restify.serveStatic({
     directory: './public'
 }));
+
 
 server.listen(listenPort, function () {
     console.log('%s listening at %s', server.name, server.url);
