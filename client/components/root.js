@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { Provider } from 'react-redux';
-import App from './app';
-import configureStore from '../configureStore';
+import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
 //import DiffMonitor from 'redux-devtools-diff-monitor';
 //import SliderMonitor from 'redux-slider-monitor';
 
-import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
+import App from './app';
+import configureStore from '../configureStore';
+
 
 const store = configureStore();
 

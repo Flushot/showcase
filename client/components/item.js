@@ -1,10 +1,9 @@
-import '../styles/item.scss';
-
 import React, { Component, PropTypes } from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
 import { Button, ButtonGroup, Glyphicon, OverlayTrigger, Popover, Label } from 'react-bootstrap';
 
+import '../styles/item.scss';
 import * as Utils from '../utils';
 const { displayIf } = Utils;
 

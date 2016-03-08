@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'; // adds 'fetch()' global
 import { Enum } from 'enumify';
 
-export class ActionTypes extends Enum {};
+export class ActionTypes extends Enum {}
 ActionTypes.initEnum([
     'START_REFRESHING_ITEMS',
     'ITEMS_REFRESHED',
@@ -17,7 +17,9 @@ ActionTypes.initEnum([
     'CANCEL_SETTINGS',
 
     'SHOW_LIKES_DIALOG',
-    'CLOSE_LIKES_DIALOG'
+    'CLOSE_LIKES_DIALOG',
+
+    'UPDATE_MODEL'
 ]);
 
 

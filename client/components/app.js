@@ -1,17 +1,15 @@
-import '../styles/app.scss';
-
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import io from 'socket.io-client';
 import _ from 'lodash';
 import { Badge, Nav, Navbar, NavBrand, NavItem, NavDropdown, MenuItem, Glyphicon,
          Grid, Row, Col, Panel, Modal, Button, ProgressBar } from 'react-bootstrap';
-import io from 'socket.io-client';
 
+import '../styles/app.scss';
 import * as Actions from '../actions';
 import * as Utils from '../utils';
-
 import Menu from './menu';
 import ItemGrid from './itemGrid';
 import Doge from './doge';

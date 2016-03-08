@@ -16,8 +16,7 @@ var config = {
             //'webpack-dev-server/client?http://0.0.0.0:3000',  // webpack host:port
             //'webpack/hot/only-dev-server',  // prevent reload on syntax errors
             './client/index.js'  // entry point
-        ],
-        vendor: Object.keys(require('./package.json').dependencies)
+        ]
     },
 
     output: {
@@ -32,8 +31,7 @@ var config = {
         // Splitting vendor code into its own bundle
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            filename: 'vendor.bundle.js',
-            minChunks: Infinity
+            filename: 'vendor.bundle.js'
         }),
 
         // Hot reloading of modules on code changes

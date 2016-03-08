@@ -24,7 +24,7 @@ export default function reducer(state = initialState, action) {
             // Append new items
             return Object.assign({}, state, {
                 refreshingItems: false,
-                items: state.items.concat(action.items.filter(item => state.items.find(x => x.id === item.id) === undefined))
+                items: action.items
             });
 
         case ActionTypes.SELECT_ITEM:

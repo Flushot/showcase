@@ -1,10 +1,9 @@
-import '../styles/itemGrid.scss';
-
 import React, { Component, PropTypes } from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { Panel, Badge, ProgressBar } from 'react-bootstrap';
 import _ from 'lodash';
 
+import '../styles/itemGrid.scss';
 import Item from './item';
 
 
