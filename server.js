@@ -38,6 +38,7 @@ var server = restify.createServer({
 
 server.use(restify.requestLogger());
 server.use(restify.queryParser());
+server.pre(restify.pre.sanitizePath());
 
 server.on('after', restify.auditLogger({
     log: log.child({
@@ -55,6 +56,64 @@ server.on('uncaughtException', function (req, res, route, err) {
 server.get('/hello/:name', function (request, response, next) {
     response.send('Hello ' + request.params.name);
     next();
+});
+
+
+/**
+ * Home page
+ */
+server.get('/', function(request, response, next) {
+    response.redirect('/index.html', next);
+});
+
+
+/**
+ * Items
+ */
+server.get('/api/items/', function (request, response, next) {
+    var itemLimit = 60,
+        imgurClientId = '531d13764026e5f';
+
+    var imgurClient = restify.createJsonClient({
+        url: 'https://api.imgur.com',
+        log: log
+    });
+
+    imgurClient.get(
+        {
+            path: '/3/gallery/hot/viral/0.json',
+            headers: {
+                'Authorization': 'Client-ID ' + imgurClientId,
+                'Accept': 'application/json'
+            }
+        },
+        function (error, imgurRequest, imgurResponse, obj) {
+            if (error) {
+                response.send(500, {error: 'Remote API request failed: ' + error.message});
+            }
+            else if (imgurResponse.statusCode < 200 || imgurResponse.statusCode > 299) {
+                response.send(503, {error: 'Remote API returned status code ' + imgurResponse.statusCode});
+            }
+            else {
+                var items = [];
+                obj.data.forEach(function(image) {
+                    if (!image.is_album && image.link) {
+                        items.push({
+                            id: image.id,
+                            title: image.title,
+                            description: image.description,
+                            url: image.link,
+                            full_url: image.link
+                        });
+                    }
+                });
+
+                response.send(items.slice(0, itemLimit - 1));
+            }
+
+            next();
+        }
+    );
 });
 
 
@@ -89,16 +148,8 @@ server.post('/render', function (request, response, next) {
     // TODO: render Root component as string
     // TODO: determine if route is valid and throw a 404 if not
     // TODO: response.send() rendered html
-    response.send('Not implemented');
+    response.send(501, {error: 'Not implemented'});
     next();
-});
-
-
-/**
- * Home page
- */
-server.get('/', function(request, response, next) {
-    response.redirect('/index.html', next);
 });
 
 
