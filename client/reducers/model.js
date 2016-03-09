@@ -14,6 +14,13 @@ export const model = new falcor.Model({
     cache: initialState
 });
 
+console.log('Getting value...');
+//model.get(["items",["gKknzEu"],["title","url"]])
+model.get(["latestItems",[{from:0, to:5}],["id","title","url"]],['latestItems', 'length'])
+    .then(function(values) {
+        console.log('Value is: %o', values);
+    });
+
 
 export default function reduxFalcorReducer(state = initialState, action) {
     switch (action.type) {

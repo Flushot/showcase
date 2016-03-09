@@ -1,7 +1,10 @@
 var restify = require('restify');
 var bunyan = require('bunyan');
-var falcorRestifyMiddleware = require('falcor-restify');
 var FalcorRouter = require('falcor-router');
+var jsong = require('falcor-json-graph');
+var falcorRestifyMiddleware = require('falcor-restify');
+var Promise = require('promise');
+//var Rx = require('rx');
 
 var listenPort = 3002;
 
@@ -45,8 +48,8 @@ server.on('after', restify.auditLogger({
         component: 'audit'
     })
 }));
-server.on('uncaughtException', function (req, res, route, err) {
-    req.log.error(err, 'got uncaught exception');
+server.on('uncaughtException', function (request, response, route, error) {
+    request.log.error(error, 'got uncaught exception');
 });
 
 
@@ -71,49 +74,15 @@ server.get('/', function(request, response, next) {
  * Items
  */
 server.get('/api/items/', function (request, response, next) {
-    var itemLimit = 60,
-        imgurClientId = '531d13764026e5f';
-
-    var imgurClient = restify.createJsonClient({
-        url: 'https://api.imgur.com',
-        log: log
-    });
-
-    imgurClient.get(
-        {
-            path: '/3/gallery/hot/viral/0.json',
-            headers: {
-                'Authorization': 'Client-ID ' + imgurClientId,
-                'Accept': 'application/json'
-            }
-        },
-        function (error, imgurRequest, imgurResponse, obj) {
-            if (error) {
-                response.send(500, {error: 'Remote API request failed: ' + error.message});
-            }
-            else if (imgurResponse.statusCode < 200 || imgurResponse.statusCode > 299) {
-                response.send(503, {error: 'Remote API returned status code ' + imgurResponse.statusCode});
-            }
-            else {
-                var items = [];
-                obj.data.forEach(function(image) {
-                    if (!image.is_album && image.link) {
-                        items.push({
-                            id: image.id,
-                            title: image.title,
-                            description: image.description,
-                            url: image.link,
-                            full_url: image.link
-                        });
-                    }
-                });
-
-                response.send(items.slice(0, itemLimit - 1));
-            }
-
+    getLatestItems()
+        .then(function (items) {
+            response.send(items);
             next();
-        }
-    );
+        })
+        .catch(function (error) {
+            response.send(500, error.message);
+            next();
+        });
 });
 
 
@@ -121,17 +90,67 @@ server.get('/api/items/', function (request, response, next) {
  * Falcor model
  */
 server.get('/model.json', falcorRestifyMiddleware(function (request, response) {
-    // create a Virtual JSON resource with single key ("greeting")
     return new FalcorRouter([
         {
-            // match a request for the key "greeting"
             route: 'greeting',
-            // respond with a PathValue with the value of "Hello World."
-            get: function () {
+            get: function (pathSet) {
                 return {
                     path: ['greeting'],
                     value: 'Hello World'
                 };
+            }
+        },
+        {
+            route: 'items[{keys:ids}][{keys:props}]',
+            get: function(pathSet) {
+                return getLatestItems()  // TODO: get from persistent storage instead
+                    .then(function(items) {
+                        var jsonGraph = { items: {} },
+                            itemsById = groupBy(items, 'id');
+
+                        pathSet.ids.forEach(function(id) {
+                            jsonGraph.items[id] = {};
+                            pathSet.props.forEach(function(prop) {
+                                jsonGraph.items[id][prop] = jsong.atom(itemsById[id][prop]);
+                            });
+                        });
+
+                        return { jsonGraph: jsonGraph };
+                    });
+            }
+        },
+        {
+            route: 'latestItems.["length"]',
+            get: function(pathSet) {
+                return getLatestItems()
+                    .then(function(items) {
+                        return {
+                            path: ['latestItems', 'length'],
+                            value: items.length
+                        };
+                    });
+            }
+        },
+        {
+            route: 'latestItems[{ranges:indexRanges}]',
+            get: function(pathSet) {
+                return getLatestItems()
+                    .then(function(items) {
+                        var selected = [];
+
+                        pathSet.indexRanges.forEach(function(range) {
+                            for (var i = range.from, c = 0;
+                                 (range.to && i <= range.to) || (range.length && c < length);
+                                 ++i, ++c) {
+                                selected.push({
+                                    path: ['latestItems', i],
+                                    value: jsong.ref(['items', [items[i].id]])
+                                });
+                            }
+                        });
+
+                        return selected;
+                    });
             }
         }
     ]);
@@ -164,3 +183,63 @@ server.get(/.+/, restify.serveStatic({
 server.listen(listenPort, function () {
     console.log('%s listening at %s', server.name, server.url);
 });
+
+
+function getLatestItems(itemLimit) {
+    return new Promise(function (resolve, reject) {
+        var imgurClientId = '531d13764026e5f',
+            imgurClient = restify.createJsonClient({
+                url: 'https://api.imgur.com',
+                log: log
+            });
+
+        imgurClient.get(
+            {
+                path: '/3/gallery/hot/viral/0.json',
+                headers: {
+                    'Authorization': 'Client-ID ' + imgurClientId,
+                    'Accept': 'application/json'
+                }
+            },
+            function (error, imgurRequest, imgurResponse, obj) {
+                if (error) {
+                    reject(new Error('Remote API request failed: ' + error.message));
+                }
+                else if (imgurResponse.statusCode < 200 || imgurResponse.statusCode > 299) {
+                    reject(new Error('Remote API returned status code ' + imgurResponse.statusCode));
+                }
+                else {
+                    var items = [];
+                    obj.data.forEach(function(image) {
+                        if (!image.is_album && image.link) {
+                            items.push({
+                                id: image.id,
+                                title: image.title,
+                                description: image.description,
+                                url: image.link,
+                                full_url: image.link
+                            });
+                        }
+                    });
+
+                    if (itemLimit !== undefined) {
+                        resolve(items.slice(0, itemLimit - 1));
+                    }
+                    else {
+                        resolve(items);
+                    }
+                }
+            }
+        );
+    });
+}
+
+function groupBy(list, key) {
+    var grouped = {};
+
+    list.forEach(function(item) {
+        grouped[item[key]] = item;
+    });
+
+    return grouped;
+}
