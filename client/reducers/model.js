@@ -14,12 +14,20 @@ export const model = new falcor.Model({
     cache: initialState
 });
 
-console.log('Getting value...');
+
+
 //model.get(["items",["gKknzEu"],["title","url"]])
-model.get(["latestItems",[{from:0, to:5}],["id","title","url"]],['latestItems', 'length'])
-    .then(function(values) {
-        console.log('Value is: %o', values);
+
+model.get(['latestItems', [{from: 0, to: 5}], ['id', 'title', 'url']], ['latestItems', 'length'])
+    .then(function(jsonGraphEnvelope) {
+        console.log('Latest items: %o', jsonGraphEnvelope.json);
     });
+
+model.getValue('settings')
+    .then(function(settings) {
+        console.log('Settings: %o', settings);
+    });
+
 
 
 export default function reduxFalcorReducer(state = initialState, action) {

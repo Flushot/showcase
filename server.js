@@ -90,6 +90,38 @@ server.get('/api/items/', function (request, response, next) {
  * Falcor model
  */
 server.get('/model.json', falcorRestifyMiddleware(function (request, response) {
+    var userId = 1,
+        settings = {
+            first_name: 'Chris',
+            last_name: 'Lyon'
+        };
+
+    /**
+     * Shape of model.json:
+     *
+     *  {
+     *      'greeting': 'Hello World',
+     *      'items': {
+     *          'xyz': {
+     *              'id': 'xyz',
+     *              'title': 'Foo',
+     *              'description': 'Foo description',
+     *              'url': 'http://whatever/foo.jpg',
+     *              'full_url': 'http://whatever/foo.jpg'
+     *          },
+     *          ...
+     *      },
+     *      'latestItems': [
+     *          { '$type': 'ref', value: ['items', ['xyz']] },
+     *          ...
+     *      ],
+     *      'settings': {
+     *          'first_name': 'Chris',
+     *          'last_name': 'Lyon'
+     *      }
+     *  }
+     *
+     */
     return new FalcorRouter([
         {
             route: 'greeting',
@@ -144,13 +176,22 @@ server.get('/model.json', falcorRestifyMiddleware(function (request, response) {
                                  ++i, ++c) {
                                 selected.push({
                                     path: ['latestItems', i],
-                                    value: jsong.ref(['items', [items[i].id]])
+                                    value: jsong.ref(['items', items[i].id])
                                 });
                             }
                         });
 
                         return selected;
                     });
+            }
+        },
+        {
+            route: 'settings',
+            get: function(pathSet) {
+                return {
+                    path: ['settings'],
+                    value: jsong.atom(settings)
+                };
             }
         }
     ]);
