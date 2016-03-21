@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "mocha",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "server": "node server"
   },
   "author": "Chris Lyon",
   "license": "ISC",
@@ -23,6 +24,7 @@
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
     "date": "^1.0.2",
+    "enzyme": "^2.1.0",
     "falcor-json-graph": "^1.1.7",
     "falcor-restify": "^1.1.1",
     "falcor-router": "^0.3.0",
@@ -53,6 +55,7 @@
     "sass-loader": "^3.1.2",
     "source-map-support": "^0.4.0",
     "style-loader": "^0.13.0",
+    "ts-loader": "^0.8.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1"

@@ -21,8 +21,8 @@ var config = {
 
     output: {
         filename: 'bundle.js',
-        path: path.join(__dirname, 'public'),
-        libraryTarget: 'umd'
+        path: path.join(__dirname, 'public')
+        //libraryTarget: 'commonjs2'
     },
 
     // Full list of webpack plugins are available at:
@@ -45,19 +45,26 @@ var config = {
             title: 'Assets',
             filename: 'index.html',
             template: 'client/index.template.html',
-            inject: true
+            inject: 'body'
         })
     ],
 
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 include: path.join(__dirname, 'client'),
                 //exclude: /node_modules/,
                 loaders: [
                     //'react-hot',
                     'babel?presets[]=react,presets[]=es2015,presets[]=stage-0'
+                ]
+            },
+            {
+                test: /\.tsx?$/,
+                include: path.join(__dirname, 'client'),
+                loaders: [
+                    'ts'
                 ]
             },
             {

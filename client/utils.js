@@ -48,7 +48,7 @@ export function getInitialUIState() {
         initialState = {};
 
         if (typeof Storage !== 'undefined') {
-            var stateBlob = sessionStorage.uiState;
+            var stateBlob = sessionStorage['uiState'];
             if (stateBlob !== undefined) {
                 initialState = JSON.parse(stateBlob);
             }

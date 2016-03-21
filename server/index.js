@@ -1,57 +1,30 @@
 var restify = require('restify');
-var bunyan = require('bunyan');
 var FalcorRouter = require('falcor-router');
 var jsong = require('falcor-json-graph');
 var falcorRestifyMiddleware = require('falcor-restify');
 var Promise = require('promise');
 //var Rx = require('rx');
+var React = require('react');
+var ReactDOMServer = require('react-dom/server');
+var fs = require('fs');
+var path = require('path');
 
-var listenPort = 3002;
+var utils = require('./utils');
+var logging = require('./logging');
 
-var log = bunyan.createLogger({
-    name: 'renderServer',
-    level: bunyan.DEBUG,
-    src: true
-});
+var listenPort = 3002,
+    staticPath = path.join(__dirname, '..', 'public'),
+    log = logging.log;
 
 var server = restify.createServer({
-    // Splunk-compatible JSON logger
-    log: log.child({
-        component: 'server',
-        level: bunyan.INFO,
-        streams: [
-            {
-                // This ensures that if we get a WARN or above all debug records
-                // related to that request are spewed to stderr - makes it nice
-                // filter out debug messages in prod, but still dump on user
-                // errors so you can debug problems
-                level: bunyan.DEBUG,
-                type: 'raw',
-                stream: new restify.bunyan.RequestCaptureStream({
-                    level: bunyan.WARN,
-                    maxRecords: 100,
-                    maxRequestIds: 1000,
-                    stream: process.stderr
-                })
-            }
-        ],
-        serializers: bunyan.stdSerializers
-    })
+    name: logging.serverName,
+    log: logging.child
 });
 
-server.use(restify.requestLogger());
 server.use(restify.queryParser());
 server.pre(restify.pre.sanitizePath());
 
-server.on('after', restify.auditLogger({
-    log: log.child({
-        component: 'audit'
-    })
-}));
-server.on('uncaughtException', function (request, response, route, error) {
-    request.log.error(error, 'got uncaught exception');
-});
-
+logging.setupServer(server);
 
 /**
  * Test
@@ -74,7 +47,7 @@ server.get('/', function(request, response, next) {
  * Items
  */
 server.get('/api/items/', function (request, response, next) {
-    getLatestItems()
+    utils.getLatestItems()
         .then(function (items) {
             response.send(items);
             next();
@@ -112,7 +85,7 @@ server.get('/model.json', falcorRestifyMiddleware(function (request, response) {
      *          ...
      *      },
      *      'latestItems': [
-     *          { '$type': 'ref', value: ['items', ['xyz']] },
+     *          { '$type': 'ref', value: ['items', 'xyz'] },
      *          ...
      *      ],
      *      'settings': {
@@ -135,10 +108,10 @@ server.get('/model.json', falcorRestifyMiddleware(function (request, response) {
         {
             route: 'items[{keys:ids}][{keys:props}]',
             get: function(pathSet) {
-                return getLatestItems()  // TODO: get from persistent storage instead
+                return utils.getLatestItems()  // TODO: get from persistent storage instead
                     .then(function(items) {
                         var jsonGraph = { items: {} },
-                            itemsById = groupBy(items, 'id');
+                            itemsById = utils.groupBy(items, 'id');
 
                         pathSet.ids.forEach(function(id) {
                             jsonGraph.items[id] = {};
@@ -154,7 +127,7 @@ server.get('/model.json', falcorRestifyMiddleware(function (request, response) {
         {
             route: 'latestItems.["length"]',
             get: function(pathSet) {
-                return getLatestItems()
+                return utils.getLatestItems()
                     .then(function(items) {
                         return {
                             path: ['latestItems', 'length'],
@@ -166,18 +139,22 @@ server.get('/model.json', falcorRestifyMiddleware(function (request, response) {
         {
             route: 'latestItems[{ranges:indexRanges}]',
             get: function(pathSet) {
-                return getLatestItems()
+                return utils.getLatestItems()
                     .then(function(items) {
-                        var selected = [];
+                        var selected = [],
+                            visited = [];
 
                         pathSet.indexRanges.forEach(function(range) {
                             for (var i = range.from, c = 0;
                                  (range.to && i <= range.to) || (range.length && c < length);
                                  ++i, ++c) {
-                                selected.push({
-                                    path: ['latestItems', i],
-                                    value: jsong.ref(['items', items[i].id])
-                                });
+                                if (!visited.find(i)) {
+                                    visited.push(i);
+                                    selected.push({
+                                        path: ['latestItems', i],
+                                        value: jsong.ref(['items', items[i].id])
+                                    });
+                                }
                             }
                         });
 
@@ -216,71 +193,36 @@ server.post('/render', function (request, response, next) {
 /**
  * Static asset
  */
-server.get(/.+/, restify.serveStatic({
-    directory: './public'
-}));
+var serveStatic = restify.serveStatic({ directory: staticPath });
+server.get(/.+/, function (request, response, next) {
+    var localPath = path.join(staticPath, decodeURIComponent(request.path()));
+    fs.stat(localPath, function(err, stats) {
+        if (!err) {
+            // Static asset
+            serveStatic(request, response, next);
+        }
+        else {
+            // Server-side render
+
+            // TODO: use webpack to compile server-side entry point bundle
+
+            // TODO: require server-side entry point bundle
+            //var serverBundle = require('server/server.bundle.js');
+            //var Root = serverBundle.Root;  // Root component
+
+            // TODO: set window.uiState and window.location so that Root element has enough data to work with
+            // TODO: determine if route is valid (using router component and set status code accordingly)
+
+            //var htmlString = ReactDOMServer.renderToString(React.createElement(Root));
+            var htmlString = "This non-existant route should be handled by the client application shell: " + localPath;
+
+            response.send(200, htmlString);
+            next();
+        }
+    });
+});
 
 
 server.listen(listenPort, function () {
     console.log('%s listening at %s', server.name, server.url);
 });
-
-
-function getLatestItems(itemLimit) {
-    return new Promise(function (resolve, reject) {
-        var imgurClientId = '531d13764026e5f',
-            imgurClient = restify.createJsonClient({
-                url: 'https://api.imgur.com',
-                log: log
-            });
-
-        imgurClient.get(
-            {
-                path: '/3/gallery/hot/viral/0.json',
-                headers: {
-                    'Authorization': 'Client-ID ' + imgurClientId,
-                    'Accept': 'application/json'
-                }
-            },
-            function (error, imgurRequest, imgurResponse, obj) {
-                if (error) {
-                    reject(new Error('Remote API request failed: ' + error.message));
-                }
-                else if (imgurResponse.statusCode < 200 || imgurResponse.statusCode > 299) {
-                    reject(new Error('Remote API returned status code ' + imgurResponse.statusCode));
-                }
-                else {
-                    var items = [];
-                    obj.data.forEach(function(image) {
-                        if (!image.is_album && image.link) {
-                            items.push({
-                                id: image.id,
-                                title: image.title,
-                                description: image.description,
-                                url: image.link,
-                                full_url: image.link
-                            });
-                        }
-                    });
-
-                    if (itemLimit !== undefined) {
-                        resolve(items.slice(0, itemLimit - 1));
-                    }
-                    else {
-                        resolve(items);
-                    }
-                }
-            }
-        );
-    });
-}
-
-function groupBy(list, key) {
-    var grouped = {};
-
-    list.forEach(function(item) {
-        grouped[item[key]] = item;
-    });
-
-    return grouped;
-}
