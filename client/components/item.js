@@ -11,7 +11,7 @@ const { displayIf } = Utils;
 export default class Item extends Component {
     static mixins = [
         PureRenderMixin
-    ]
+    ];
 
     static propTypes = {
         item: PropTypes.object.isRequired,
@@ -23,7 +23,7 @@ export default class Item extends Component {
         onLiked: PropTypes.func.isRequired,
         onHated: PropTypes.func.isRequired,
         onClearRating: PropTypes.func.isRequired
-    }
+    };
 
     static defaultProps = {
         width: 200,
