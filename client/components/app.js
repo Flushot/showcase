@@ -1,20 +1,14 @@
-import React, { Component, PropTypes } from 'react';
-import classNames from 'classnames';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import io from 'socket.io-client';
-import _ from 'lodash';
-import { Badge, Nav, Navbar, NavBrand, NavItem, NavDropdown, MenuItem, Glyphicon,
-         Grid, Row, Col, Panel, Modal, Button, ProgressBar } from 'react-bootstrap';
-
-import '../styles/app.scss';
-import * as Actions from '../actions';
-import * as Utils from '../utils';
-import Menu from './menu';
-import ItemGrid from './itemGrid';
-import Doge from './doge';
-import SettingsDialog from './settingsDialog';
-import LikedItemsDialog from './likedItemsDialog';
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {Grid, Row, Col, Panel, ProgressBar} from "react-bootstrap";
+import "../styles/app.scss";
+import * as Actions from "../actions";
+import Menu from "./menu";
+import ItemGrid from "./itemGrid";
+import Doge from "./doge";
+import SettingsDialog from "./settingsDialog";
+import LikedItemsDialog from "./likedItemsDialog";
 
 
 // console.log('Init socket.io...');

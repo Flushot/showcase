@@ -1,9 +1,15 @@
 var gulp = require('gulp'),
+    jshint = require('gulp-jshint'),
     rimraf = require('gulp-rimraf'),
     webpack = require('webpack'),
     WebpackDevServer = require('webpack-dev-server'),
     path = require('path'),
     config = require('./webpack.config');
+
+var filesToLint = [
+    'server/*.js',
+    'gulpfile.js'
+];
 
 gulp.task('dev', function() {
     var listen_addr = '0.0.0.0',
@@ -40,6 +46,12 @@ gulp.task('js:watch', ['js:clean'], function(done) {
 
 gulp.task('js:clean', function() {
     return gulp.src([config.output.path]).pipe(rimraf());
+});
+
+gulp.task('js:lint', function () {
+    return gulp.src(filesToLint)
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
 });
 
 gulp.task('default', ['dev']);

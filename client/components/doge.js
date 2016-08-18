@@ -6,15 +6,15 @@ import classNames from 'classnames';
 export default class Doge extends Component {
     static mixins = [
         PureRenderMixin
-    ]
+    ];
 
     static propTypes = {
         isVisible: PropTypes.bool
-    }
+    };
 
     static defaultProps = {
         isVisible: true
-    }
+    };
 
     render() {
         return (
