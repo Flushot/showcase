@@ -8,7 +8,9 @@ var gulp = require('gulp'),
 
 var filesToLint = [
     'server/*.js',
-    'gulpfile.js'
+    'gulpfile.js',
+    'client/components/*.js',
+    'client/reducers/*.js'
 ];
 
 gulp.task('dev', function() {
@@ -50,7 +52,7 @@ gulp.task('js:clean', function() {
 
 gulp.task('js:lint', function () {
     return gulp.src(filesToLint)
-        .pipe(jshint())
+        .pipe(jshint({ linter: require('jshint-jsx').JSXHINT }))
         .pipe(jshint.reporter('default'));
 });
 
